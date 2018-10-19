@@ -12,7 +12,7 @@
     Can be easily be extended to integrate support for additional interest rate models  
     Performance is ensured by hyper parameters that manages multithreaded calculations internally
 
-* Currently supported interest rate model:
+* Currently supported interest rate model  
     Black  
     Orstein-Ulhenback system with multiple degrees of freedom
 
