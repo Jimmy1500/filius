@@ -1,7 +1,7 @@
 # Project Filius #
 ----
 
-## Fix Income and Liability Instruments Utility Set ##
+## Fixed Income and Liability Instruments Utility Set ##
 
 ### Summary ###
 
