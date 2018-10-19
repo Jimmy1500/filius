@@ -20,6 +20,8 @@
 
 * Dependencies  
     C++17
+* How to build or build project  
+    make [clean] [build] [run]
 * How to run tests  
     gdb  
     valgrind
