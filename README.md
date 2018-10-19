@@ -16,9 +16,9 @@
         (2) Lock model API calls to ensure sequential assess
 
 * Currently supported interest rate models  
-    Black  
-    Orstein-Ulhenback system with multiple degrees of freedom
-    Can be easily be extended to integrate support for additional interest rate models  
+    * Black  
+    * Orstein-Ulhenback system with multiple degrees of freedom  
+    * Can be easily be extended to integrate support for additional interest rate models  
 
 * Theoretical references  
     [G2++](http://www.dm.unibo.it/~pascucci/web/Ricerca/PDF/difra.pdf)
