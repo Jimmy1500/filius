@@ -14,10 +14,10 @@
 
 * Currently supported interest rate model:
     Black  
-    Gaussian Orstein-Ulhenback with multiple degrees of freedom
+    Gaussian Orstein-Ulhenback with multiple degrees of freedom (G2++)
 
 * Theoretical references  
-    [G2++](www.dm.unibo.it/~pascucci/web/Ricerca/PDF/difra.pdf)
+    [G2++](http://www.dm.unibo.it/~pascucci/web/Ricerca/PDF/difra.pdf)
 
 * Version  
 	1.0
