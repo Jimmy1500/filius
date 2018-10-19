@@ -28,7 +28,7 @@
 
 * Repo owner  
 	Owner: Jimmy1500  
-    Email: james.ding.illinois@gmail.com
+    Email: lighteningmagic@gmail.com
 
 ### Usage in academic research or non-profit project ###
 
