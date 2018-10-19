@@ -14,7 +14,7 @@
     Performance is ensured by hyper parameters that manages multithreaded calculations internally 
 
 * Version  
-	0.1
+	1.0
 
 ### How do I get set up? ###
 
