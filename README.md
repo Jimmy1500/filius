@@ -9,8 +9,8 @@
 	Fix income derivative pricing framework and market calibration tool
 
 * Description  
-    Currently supports Gaussian Orstein-Ulhenback interest rate model with multiple degrees of freedom (G2++)
-    Can be easily be extended to integrate support for additional interest rate models
+    Currently supports Gaussian Orstein-Ulhenback interest rate model with multiple degrees of freedom (G2++)  
+    Can be easily be extended to integrate support for additional interest rate models  
     Performance is ensured by hyper parameters that manages multithreaded calculations internally 
 
 * Version  
@@ -27,7 +27,7 @@
 ### Who do I talk to? ###
 
 * Repo owner  
-	Owner: Jimmy1500
+	Owner: Jimmy1500  
     Email: james.ding.illinois@gmail.com
 
 ### Usage in academic research or non-profit project ###
