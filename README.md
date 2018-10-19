@@ -5,15 +5,15 @@
 
 ### Summary ###
 
-* Core feature
+* Core feature  
 	Fix income derivative pricing framework and market calibration tool
 
-* Description
+* Description  
     Currently supports Gaussian Orstein-Ulhenback interest rate model with multiple degrees of freedom (G2++)
     Can be easily be extended to integrate support for additional interest rate models
     Performance is ensured by hyper parameters that manages multithreaded calculations internally 
 
-* Version 
+* Version  
 	0.1
 
 ### How do I get set up? ###
@@ -26,14 +26,14 @@
 
 ### Who do I talk to? ###
 
-* Repo owner
+* Repo owner  
 	Owner: Jimmy1500
     Email: james.ding.illinois@gmail.com
 
 ### Usage in academic research or non-profit project ###
 
 This project is developed completely voluntarily.
-To support our developers, please acknowledge our work when you use FILIUS in your project.
+To support our developers, please acknowledge our work when you use Filius in your project.
 You can do so by citing this github repo, and also feel free to email repo owner if you would like to contribute to this project.
 
 ### Instruction ###
