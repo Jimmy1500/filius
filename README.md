@@ -1,7 +1,7 @@
-# README #
-
-## Fix Income and Liability Instruments Utility Set (FILIUS) ##
+# Project Filius #
 ----
+
+## Fix Income and Liability Instruments Utility Set ##
 
 ### Summary ###
 
@@ -32,9 +32,10 @@
 
 ### Usage in academic research or non-profit project ###
 
-This project is developed completely voluntarily.
+This project is developed completely on voluntary basis.
 To support our developers, please acknowledge our work when you use Filius in your project.
-You can do so by citing this github repo, and also feel free to email repo owner if you would like to contribute to this project.
+You can do so by citing this github repo.
+And also feel free to email repo owner if you would like to comment on or contribute to this project.
 
 ### Instruction ###
 
