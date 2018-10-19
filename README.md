@@ -39,7 +39,7 @@ And also feel free to email repo owner if you would like to comment on or contri
 
 ### Instruction ###
 
-Project Filius is a free software project licensed under [GNU General Public License 3](LICENSE).
+Project Filius is a free software project licensed under [GNU General Public License 3](LICENSE).  
 It is provided as is WITHOUT ANY WARRANTY.
 User will be liable for any consequence from using, redistributing or modifying this software.
 
