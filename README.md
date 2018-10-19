@@ -9,12 +9,16 @@
 	Fix income derivative pricing framework and market calibration tool
 
 * Description  
-    Can be easily be extended to integrate support for additional interest rate models  
-    Performance is ensured by hyper parameters that manages multithreaded calculations internally
+    API assess style is designed to be single threaded access and configuration based pattern  
+    Performance is ensured by hyper parameters that manages multithreaded calculations internally  
+    If you want to integrate this model to your multithreaded system, either/or:
+      * Do not share model object between threads, or use separate model objects for each thread
+      * Lock model API calls to ensure sequential assess
 
-* Currently supported interest rate model  
+* Currently supported interest rate models  
     Black  
     Orstein-Ulhenback system with multiple degrees of freedom
+    Can be easily be extended to integrate support for additional interest rate models  
 
 * Theoretical references  
     [G2++](http://www.dm.unibo.it/~pascucci/web/Ricerca/PDF/difra.pdf)
