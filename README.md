@@ -13,8 +13,11 @@
     Performance is ensured by hyper parameters that manages multithreaded calculations internally
 
 * Currently supported interest rate model:
-    Black 
-    Gaussian Orstein-Ulhenback with multiple degrees of freedom [G2++](www.dm.unibo.it/~pascucci/web/Ricerca/PDF/difra.pdf)  
+    Black  
+    Gaussian Orstein-Ulhenback with multiple degrees of freedom
+
+* Theoretical references  
+    [G2++](www.dm.unibo.it/~pascucci/web/Ricerca/PDF/difra.pdf)
 
 * Version  
 	1.0
