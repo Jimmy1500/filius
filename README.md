@@ -9,9 +9,12 @@
 	Fix income derivative pricing framework and market calibration tool
 
 * Description  
-    Currently supports Gaussian Orstein-Ulhenback interest rate model with multiple degrees of freedom (G2++)  
     Can be easily be extended to integrate support for additional interest rate models  
-    Performance is ensured by hyper parameters that manages multithreaded calculations internally 
+    Performance is ensured by hyper parameters that manages multithreaded calculations internally
+
+* Currently supported interest rate model:
+    Black 
+    Gaussian Orstein-Ulhenback with multiple degrees of freedom [G2++](www.dm.unibo.it/~pascucci/web/Ricerca/PDF/difra.pdf)  
 
 * Version  
 	1.0
