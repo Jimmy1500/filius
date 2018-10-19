@@ -26,7 +26,7 @@
 
 ### Who do I talk to? ###
 
-* Repo owner 
+* Repo owner  
 	Owner: Jimmy1500  
     Email: james.ding.illinois@gmail.com
 
