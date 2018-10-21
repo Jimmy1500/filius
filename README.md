@@ -9,15 +9,15 @@
 	Fixed income derivatives pricing framework and market calibration tool
 
 * Description  
-    * API assessment style is designed to be single threaded access with configuration based interation paradigm
-    * Performance is ensured by hyper parameters that manages multithreaded calculations internally  
-    * If you want to integrate this model to your multithreaded system, either/or:  
+    1. API assessment style is designed to be single threaded access with configuration based interation paradigm
+    2. Performance is ensured by hyper parameters that manages multithreaded calculations internally  
+    3. If you want to integrate this model to your multithreaded system, either/or:  
         (1) Do not share model object between threads, or use separate model objects for each thread   
         (2) Lock model API calls to ensure sequential assess
 
 * Currently supported interest rate models  
-    * Black  
-    * Orstein-Ulhenback system with multiple degrees of freedom  
+    1. Black  
+    2. Orstein-Ulhenback system with multiple degrees of freedom  
     * Can be easily be extended to integrate support for additional interest rate models  
 
 * Theoretical references  
@@ -31,9 +31,9 @@
 * Dependencies  
     C++17
 * How to build project  
-    ..make (compile program)
-    ..make build (compile program, for the first time)
-    ..make clean (clean obj and lib directory for clean build)
+    make (compile program)
+    make build (compile program, for the first time)
+    make clean (clean obj and lib directory for clean build)
 * How to run tests  
     make run
 * Supported additional test utilities  
