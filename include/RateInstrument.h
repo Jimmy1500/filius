@@ -55,13 +55,14 @@ class RateInstrument{
 
         virtual double getModelValue() = 0;
 
-        virtual double getMarketSpread(size_t order = 1){
-            double spread = getModelValue() - MarketValue;
+        virtual double getLoss(size_t order = 1){
+            double mkt_diff = getModelValue() - MarketValue;
+            double loss = mkt_diff;
             size_t i;
             for ( i = 1; i < order; ++i){
-                spread *= spread;
+                loss *= mkt_diff;
             }
-            return spread;
+            return loss;
         }
 
 };
