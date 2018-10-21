@@ -26,12 +26,12 @@ double Optimization::loss_function (RateInstrument * instruments, size_t num_ins
     return loss;
 }
 
-double Optimization::avg_loss (G2PP * model, RateInstrument * instruments, size_t num_instrs, double * weights, int ntrials, size_t order){
+double Optimization::avg_loss (G2PP * model, RateInstrument * instruments, size_t num_instrs, double * weights, size_t num_trials, size_t order){
     size_t i;
     double avg = 0;
-    for ( i = 0; i < num_instrs; ++i){
+    for ( i = 0; i < num_trials; ++i){
         model->markDirtyAll(); // ensure simulation process kicks in to recalculate
         avg += fabs(loss_function(instruments, num_instrs, weights, order));
     }
-    return (avg/(double)ntrials);
+    return (avg/(double)num_trials);
 }
