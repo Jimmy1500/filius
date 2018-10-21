@@ -10,8 +10,8 @@
  *       Revision:  none
  *       Compiler:  g++
  *
- *         Author:  Jimmy1500
- *                  lighteningmagic@gmail.com
+ *         Author:  James Ding
+ *                  james.ding.illinois@gmail.com
  *
  * ==========================================================================
  */
