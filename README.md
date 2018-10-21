@@ -21,7 +21,7 @@
     * Can be easily be extended to integrate support for additional interest rate models  
 
 * Theoretical references  
-    [G2++](http://www.dm.unibo.it/~pascucci/web/Ricerca/PDF/difra.pdf)
+    [Gn++](http://www.dm.unibo.it/~pascucci/web/Ricerca/PDF/difra.pdf)
 
 * Version  
 	1.0
