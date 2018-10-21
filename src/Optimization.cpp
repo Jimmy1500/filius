@@ -26,7 +26,7 @@ double Optimization::loss_function (RateInstrument * instruments, size_t num_ins
     return loss;
 }
 
-double Optimization::avg_loss (G2PP * model, RateInstrument * instruments, size_t num_instrs, double * weights, size_t num_trials, size_t order){
+double Optimization::avg_loss (RateModel * model, RateInstrument * instruments, size_t num_instrs, double * weights, size_t num_trials, size_t order){
     size_t i;
     double avg = 0;
     for ( i = 0; i < num_trials; ++i){

@@ -33,6 +33,6 @@ class Optimization{
         void calibrate (RateModel *, RateInstrument *, size_t, double *, size_t, double, double k=0.01, size_t loss_trials=1);
         void getGradient (double *, size_t, RateModel *, RateInstrument *, size_t, double *);
         double loss_function (RateInstrument * , size_t , double * , size_t order = 2);
-        double avg_loss (G2PP * , RateInstrument * , size_t , double * , size_t , size_t order = 2);
+        double avg_loss (RateModel * , RateInstrument * , size_t , double * , size_t , size_t order = 2);
 };
 #endif
