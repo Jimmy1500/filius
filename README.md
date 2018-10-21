@@ -33,7 +33,7 @@
 * How to build project  
     make (compile program)  
     make build (compile program, for the first time)  
-    make clean (clean obj and lib directory for clean build)
+    make clean (clean obj and lib directories for clean build)
 * How to run tests  
     make run
 * Supported additional test utilities  
