@@ -26,7 +26,7 @@
 #include <random>
 
 using namespace std;
-//This class creates a 2D pool of random number engines with ndims & npaths <user definited> for multi-threaded use
+//This class creates a 2D pool of random number engines with ndims & npaths <user defined> for multi-threaded use
 //Warning: do not share a particular random engine between objects in multithreaded settings
 
 #ifdef WIN32 
@@ -73,7 +73,7 @@ class Rand{
 };
 
 
-template <class T>
+template<class T>
 Rand<T>::Rand(size_t paths, size_t dims, T mu, T sigma) : ndims(dims), npaths(paths), Engines(new Engine* [dims]), norm_dist(mu, sigma), uniform_dist(mu, sigma)
 {
     random_device rd{};
@@ -99,7 +99,7 @@ Rand<T>::Rand(size_t paths, size_t dims, T mu, T sigma, unsigned int**rseed) : E
     }
 }
 
-template <class T>
+template<class T>
 Rand<T>::~Rand(void){
     size_t i;
     for (i = 0; i < ndims; ++i){
@@ -108,7 +108,7 @@ Rand<T>::~Rand(void){
     delete [] Engines;
 }
 
-template <class T>
+template<class T>
 size_t Rand<T>::resize(size_t paths, size_t dims){
     if ( ndims != dims ){
         size_t i,j;
