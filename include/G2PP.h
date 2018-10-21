@@ -76,10 +76,8 @@ Volatilies:               [ sigma1    ,      sigma2 ]
 #include "Simulation.h"
 #include "Curve.h"
 #include "RateModel.h"
-#include <mutex>
 
 #ifdef __DEBUG__
-extern mutex mtx;
 #include <iostream>
 #define DEBUG(MSG) mtx.lock(); cout<<"Warning: "<<MSG<<endl; mtx.unlock();
 #endif

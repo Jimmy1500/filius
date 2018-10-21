@@ -1,9 +1,5 @@
 #include "G2PP.h"
 
-#ifdef __DEBUG__
-mutex mtx;
-#endif
-
 G2PP::G2PP()
     : RateModel(RateModelType::RMT_G2PP, "Gaussian 2-factor short rate model(G2++)"),
     Sim(new Simulation()),
@@ -296,9 +292,9 @@ void G2PP::getZCBP(double * prices, double * t, double T, size_t nterms){
             default:
                 {
                     size_t last_thread = nthreads-1, paths_per_thread = (npaths - (npaths % nthreads))/nthreads, i;
-                    thread * threads = new thread[nthreads]; mutex pv_mtx;
+                    thread * threads = new thread[nthreads];
                     for (i = 0; i < last_thread; ++i){
-                        threads[i] = thread([this,nterms,i,paths_per_thread,npaths,a,b,vol1,vol2,rho,chol_y,t,T,prices,&pv_mtx]()->void{
+                        threads[i] = thread([this,nterms,i,paths_per_thread,npaths,a,b,vol1,vol2,rho,chol_y,t,T,prices]()->void{
                             double t_,T_t,Z_X,Z_Y,X,Y,coef,mean;
                             size_t term, path, begin, end;
                             for (term = 0; term < nterms; ++term){
@@ -316,12 +312,12 @@ void G2PP::getZCBP(double * prices, double * t, double T, size_t nterms){
                                     else{      Y = vol2*sqrt(.5*(1.-exp(-2.*b*t_))/b)*(rho*Z_X-chol_y*Z_Y); }
                                     mean += coef*.5*( exp(-M_XY( X, Y, T_t)) + exp(-M_XY(-X,-Y, T_t)) );
                                 }
-                                pv_mtx.lock(); prices[term] += mean; pv_mtx.unlock();
+                                mtx.lock(); prices[term] += mean; mtx.unlock();
                             }
                         });
                     }
 
-                    threads[last_thread] = thread([this,nterms,last_thread,paths_per_thread,npaths,a,b,vol1,vol2,rho,chol_y,t,T,prices,&pv_mtx]()->void{
+                    threads[last_thread] = thread([this,nterms,last_thread,paths_per_thread,npaths,a,b,vol1,vol2,rho,chol_y,t,T,prices]()->void{
                         double t_,T_t,Z_X,Z_Y,X,Y,coef,mean;
                         size_t term, path, begin;
                         for (term = 0; term < nterms; ++term){
@@ -339,7 +335,7 @@ void G2PP::getZCBP(double * prices, double * t, double T, size_t nterms){
                                 else{      Y = vol2*sqrt(.5*(1.-exp(-2.*b*t_))/b)*(rho*Z_X-chol_y*Z_Y); }
                                 mean += coef*.5*( exp(-M_XY( X, Y, T_t)) + exp(-M_XY(-X,-Y, T_t)) );
                             }
-                            pv_mtx.lock(); prices[term] += mean; pv_mtx.unlock();
+                            mtx.lock(); prices[term] += mean; mtx.unlock();
                         }
                     });
 
@@ -438,9 +434,9 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                 default:
                     {
                         size_t last_thread = nthreads-1, paths_per_thread = (npaths - (npaths % nthreads))/nthreads, i;
-                        thread * threads = new thread[nthreads]; mutex pv_mtx;
+                        thread * threads = new thread[nthreads];
                         for (i = 0; i < last_thread; ++i){
-                            threads[i] = thread([this,nterms,i,paths_per_thread,npaths,a,b,vol1,vol2,rho,chol_y,t,T,X,Y,prices,&pv_mtx]()->void{
+                            threads[i] = thread([this,nterms,i,paths_per_thread,npaths,a,b,vol1,vol2,rho,chol_y,t,T,X,Y,prices]()->void{
                                 double T_,T_t,Z_X,Z_Y,coef,mean;
                                 size_t term, path, begin = i*paths_per_thread, end = (i+1)*paths_per_thread;
                                 for (term = 0; term < nterms; ++term){
@@ -457,12 +453,12 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                                         else{      Y[path] = vol2*sqrt(.5*(1.-exp(-2.*b*t))/b)*(rho*Z_X-chol_y*Z_Y); }
                                         mean += coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
                                     }
-                                    pv_mtx.lock(); prices[term] += mean; pv_mtx.unlock();
+                                    mtx.lock(); prices[term] += mean; mtx.unlock();
                                 }
                             });
                         }
 
-                        threads[last_thread] = thread([this,nterms,last_thread,paths_per_thread,npaths,a,b,vol1,vol2,rho,chol_y,t,T,X,Y,prices,&pv_mtx]()->void{
+                        threads[last_thread] = thread([this,nterms,last_thread,paths_per_thread,npaths,a,b,vol1,vol2,rho,chol_y,t,T,X,Y,prices]()->void{
                             double T_,T_t,Z_X,Z_Y,coef,mean;
                             size_t term, path, begin = last_thread*paths_per_thread;
                             for (term = 0; term < nterms; ++term){
@@ -479,7 +475,7 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                                     else{      Y[path] = vol2*sqrt(.5*(1.-exp(-2.*b*t))/b)*(rho*Z_X-chol_y*Z_Y); }
                                     mean += coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
                                 }
-                                pv_mtx.lock(); prices[term] += mean; pv_mtx.unlock();
+                                mtx.lock(); prices[term] += mean; mtx.unlock();
                             }
                         });
 
@@ -519,9 +515,9 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                 default:
                     {
                         size_t last_thread = nthreads-1, paths_per_thread = (npaths - (npaths % nthreads))/nthreads, i;
-                        thread * threads = new thread[nthreads]; mutex pv_mtx;
+                        thread * threads = new thread[nthreads];
                         for (i = 0; i < last_thread; ++i){
-                            threads[i] = thread([this,nterms,i,paths_per_thread,npaths,a,b,vol1,vol2,rho,chol_y,t,T,X,Y,prices,&pv_mtx]()->void{
+                            threads[i] = thread([this,nterms,i,paths_per_thread,npaths,a,b,vol1,vol2,rho,chol_y,t,T,X,Y,prices]()->void{
                                 double T_,T_t,coef,mean;
                                 size_t term, path, begin = i*paths_per_thread, end = (i+1)*paths_per_thread;
                                 for (term = 0; term < nterms; ++term){
@@ -529,12 +525,12 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                                     for (path = begin; path < end; ++path){
                                         mean += coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
                                     }
-                                    pv_mtx.lock(); prices[term] += mean; pv_mtx.unlock();
+                                    mtx.lock(); prices[term] += mean; mtx.unlock();
                                 }
                             });
                         }
 
-                        threads[last_thread] = thread([this,nterms,last_thread,paths_per_thread,npaths,a,b,vol1,vol2,rho,chol_y,t,T,X,Y,prices,&pv_mtx]()->void{
+                        threads[last_thread] = thread([this,nterms,last_thread,paths_per_thread,npaths,a,b,vol1,vol2,rho,chol_y,t,T,X,Y,prices]()->void{
                             double T_,T_t,coef,mean;
                             size_t term, path, begin = last_thread*paths_per_thread;
                             for (term = 0; term < nterms; ++term){
@@ -542,7 +538,7 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                                 for (path = begin; path < npaths; ++path){
                                     mean += coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
                                 }
-                                pv_mtx.lock(); prices[term] += mean; pv_mtx.unlock();
+                                mtx.lock(); prices[term] += mean; mtx.unlock();
                             }
                         });
 

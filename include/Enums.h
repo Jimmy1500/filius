@@ -18,6 +18,10 @@
 #ifndef ENUMS_H
 #define ENUMS_H
 
+#include <mutex>
+
+static mutex mtx;
+
 enum RateModelType {RMT_G2PP=0, RMT_BLACK, NUM_MODEL_TYPES};
 
 namespace G2
