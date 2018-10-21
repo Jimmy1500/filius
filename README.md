@@ -31,8 +31,8 @@
 * Dependencies  
     C++17
 * How to build project  
-    make (compile program)
-    make build (compile program, for the first time)
+    make (compile program)  
+    make build (compile program, for the first time)  
     make clean (clean obj and lib directory for clean build)
 * How to run tests  
     make run
