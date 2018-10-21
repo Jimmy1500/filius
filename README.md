@@ -6,7 +6,7 @@
 ### Summary ###
 
 * Core feature  
-	Fix income derivative pricing framework and market calibration tool
+	Fixed income derivative pricing framework and market calibration tool
 
 * Description  
     * API assess style is designed to be single threaded access with configuration based interation paradigm
@@ -54,8 +54,9 @@ And also feel free to email repo owner if you would like to comment on or contri
 ### Instruction ###
 
 Project Filius is a free software project licensed under [GNU General Public License 3](LICENSE).  
+Filius  Copyright (C) 2016-2018  James Ding  
 It is provided as is WITHOUT ANY WARRANTY.
-User will be liable for any consequence from using, redistributing or modifying this software.
+You can redistribute it and/or modify it under the terms of the GNU General Public License 3 published by the Free Software Foundation.
 
 ### Compiler options ###
 * \_\_DEBUG\_\_: Pass this macro flag to compiler will lead to more verbose debug information whenever it is available
