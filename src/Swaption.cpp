@@ -7,7 +7,7 @@ Swaption::Swaption(RateModel* model)
     Flags (new size_t[SWPT::NUM_PARAMS]),
     Dirty(0),
     Prices(nullptr),
-    Payoff(0)
+    Payoff(0.)
 {
     if (Model){ Description.append( Model->getModelDescription()); }
     Flags[SWPT::NTL] = SWPT::GET_VALUE;
@@ -70,13 +70,13 @@ double Swaption::getModelValue(){
                                 {
                                     size_t  i;
                                     size_t last_thread = nthreads-1, paths_per_thread = (npaths - (npaths % nthreads))/nthreads;
-                                    thread * threads = new thread[nthreads]; double * pay_offs = new double[nthreads]();
+                                    thread * threads = new thread[nthreads];
                                     for (i = 0; i < last_thread; ++i){
-                                        threads[i] = thread([this,i,paths_per_thread,strike,settle,terms,nterms,pay_offs]()->void{
+                                        threads[i] = thread([this,i,paths_per_thread,strike,settle,terms,nterms]()->void{
                                             size_t begin = i*paths_per_thread;
                                             size_t end   = (i+1)*paths_per_thread;
                                             size_t path, term;
-                                            double float_leg, fix_leg, fix_factor;
+                                            double float_leg, fix_leg, fix_factor, pay_off = 0.;
                                             for (path = begin; path < end; ++path){
                                                 fix_factor = ( terms[0] - settle ) * Prices->value[path][0];
                                                 for (term = 1; term < Prices->nterms; ++term){
@@ -84,15 +84,16 @@ double Swaption::getModelValue(){
                                                 }
                                                 fix_leg = strike * fix_factor;
                                                 float_leg = Prices->value[path][0] - Prices->value[path][nterms-1];
-                                                pay_offs[i] += ( float_leg > fix_leg ? float_leg - fix_leg : 0 );
+                                                pay_off += ( float_leg > fix_leg ? float_leg - fix_leg : 0. );
                                             }
+                                            mtx.lock(); Payoff += pay_off; mtx.unlock();
                                         });
                                     }
 
-                                    threads[last_thread] = thread([this,npaths,last_thread,paths_per_thread,strike,settle,terms,nterms,pay_offs]()->void{
+                                    threads[last_thread] = thread([this,npaths,last_thread,paths_per_thread,strike,settle,terms,nterms]()->void{
                                         size_t begin = last_thread*paths_per_thread;
                                         size_t path, term;
-                                        double float_leg, fix_leg, fix_factor;
+                                        double float_leg, fix_leg, fix_factor, pay_off = 0.;
                                         for (path = begin; path < npaths; ++path){
                                             fix_factor = ( terms[0] - settle ) * Prices->value[path][0];
                                             for (term = 1; term < Prices->nterms; ++term){
@@ -100,15 +101,15 @@ double Swaption::getModelValue(){
                                             }
                                             fix_leg = strike * fix_factor;
                                             float_leg = Prices->value[path][0] - Prices->value[path][nterms-1];
-                                            pay_offs[last_thread] += ( float_leg > fix_leg ? float_leg - fix_leg : 0 );
+                                            pay_off += ( float_leg > fix_leg ? float_leg - fix_leg : 0. );
                                         }
+                                        mtx.lock(); Payoff += pay_off; mtx.unlock();
                                     });
 
                                     for (i = 0; i < nthreads; ++i){ threads[i].join(); }
-                                    for (i = 0; i < nthreads; ++i){ Payoff += pay_offs[i]; }
 
-                                    thread garbage_collection = thread([threads, pay_offs]()->void{
-                                        delete [] threads; delete [] pay_offs;
+                                    thread garbage_collection = thread([threads]()->void{
+                                        delete [] threads;
                                     });
                                     garbage_collection.detach();
                                     break;
