@@ -63,15 +63,14 @@ class RateModel{
 
         //Usage: getZCBP(double * prices, double * t, double T, size_t len)
         //Output: prices = [P(t[0],T) ,..., P(t[nterms-1], T)]
-        virtual void getZCBP(double *, double *, double, size_t){
-            return;
-        }
+        virtual void getZCBP(double *, double *, double, size_t){ }
 
         //Usage: getZCBP(double * prices, double t, double * T, size_t len)
         //Output: prices = [P(t,T[0]) ,..., P(t, T[nterms-1])]
-        virtual void getZCBP(double *, double, double *, size_t){
-            return;
-        }
+        virtual void getZCBP(double *, double, double *, size_t){ }
+
+        //Enforce recalculation (if applicable)
+        virtual void markDirtyAll(){ }
 
 };
 
