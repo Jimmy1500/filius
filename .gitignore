@@ -22,3 +22,6 @@ Unix_x86_64/*
 
 Win_x86_64/
 Win_x86_64/*
+
+# templates
+legacy/
