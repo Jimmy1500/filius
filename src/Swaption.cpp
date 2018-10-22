@@ -64,7 +64,7 @@ double Swaption::getModelValue(){
                                         }
                                         fix_leg = strike * fix_factor;
                                         float_leg = Prices->value[path][0] - Prices->value[path][nterms-1];
-                                        Payoff += ( float_leg > fix_leg ? float_leg - fix_leg : 0 );
+                                        Payoff += ( (float_leg > fix_leg) ? (float_leg - fix_leg) : (0.) );
                                     }
                                     break;
                                 }// case 1
@@ -86,7 +86,7 @@ double Swaption::getModelValue(){
                                                 }
                                                 fix_leg = strike * fix_factor;
                                                 float_leg = Prices->value[path][0] - Prices->value[path][nterms-1];
-                                                pay_off += ( float_leg > fix_leg ? float_leg - fix_leg : 0. );
+                                                pay_off += ( (float_leg > fix_leg) ? (float_leg - fix_leg) : (0.) );
                                             }
                                             mtx.lock(); Payoff += pay_off; mtx.unlock();
                                         });
@@ -103,7 +103,7 @@ double Swaption::getModelValue(){
                                             }
                                             fix_leg = strike * fix_factor;
                                             float_leg = Prices->value[path][0] - Prices->value[path][nterms-1];
-                                            pay_off += ( float_leg > fix_leg ? float_leg - fix_leg : 0. );
+                                            pay_off += ( (float_leg > fix_leg) ? (float_leg - fix_leg) : (0.) );
                                         }
                                         mtx.lock(); Payoff += pay_off; mtx.unlock();
                                     });
