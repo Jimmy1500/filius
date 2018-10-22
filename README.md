@@ -18,7 +18,7 @@
 * Currently supported interest rate models  
     1. Black  
     2. Orstein-Ulhenback system with multiple degrees of freedom  
-    * Can be easily be extended to integrate support for additional interest rate models  
+    * Can easily be extended to integrate support for additional interest rate models  
 
 * Theoretical references  
     [Gn++](http://www.dm.unibo.it/~pascucci/web/Ricerca/PDF/difra.pdf)
