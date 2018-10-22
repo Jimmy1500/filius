@@ -152,6 +152,10 @@ class Swaption : public RateInstrument{
         inline size_t isDirty(size_t step){
             return Dirty & step;
         }
+
+        inline size_t isDirty(){
+            return ( Dirty > 0 );
+        }
 };
 
 #endif
