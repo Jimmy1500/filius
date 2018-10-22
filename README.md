@@ -10,7 +10,7 @@
 
 * Description  
     * API assessment style is designed to be single threaded access with configuration based interation paradigm
-    * Performance is ensured by hyper parameters that manages multithreaded calculations internally  
+    * Performance is ensured by hyper parameters that manage multithreaded calculations internally  
     * If you want to integrate this model to your multithreaded system, either/or:  
         (1) Do not share model object between threads, or use separate model objects for each thread   
         (2) Lock model API calls to ensure sequential assess
