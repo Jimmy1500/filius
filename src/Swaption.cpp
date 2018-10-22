@@ -25,6 +25,8 @@ double Swaption::getModelValue(){
     if (!Model){ return MarketValue; }
 #ifdef __REGEN__
     markDirtyAll();
+#else
+    if ( Model->isDirty() ) { markDirtyFrom(SWPT::GET_ZCBP); }
 #endif
     switch (Model->getModelType()){
         case RMT_G2PP:
