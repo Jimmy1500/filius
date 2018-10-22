@@ -263,6 +263,11 @@ class G2PP : public RateModel{
         inline size_t isDirty(size_t step){
             return Dirty & step;
         }
+
+        inline size_t isDirty(){
+            return ( Dirty > 0);
+        }
+
 };
 
 #endif

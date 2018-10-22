@@ -72,6 +72,9 @@ class RateModel{
         //Enforce recalculation (if applicable)
         virtual void markDirtyAll(){ }
 
+        //Check if there is anything at all that needs recalculation
+        virtual size_t isDirty(){ return 1; }
+
 };
 
 #endif
