@@ -146,7 +146,7 @@ class G2PP : public RateModel{
         double      ZCB;        //ZCB Price P(t,T) previous calculated 
 
         volatile size_t Dirty;  //Binary process recalcuation flag
-        size_t     *Flags;      //Procedure dirty flags associated with Model Coefficients, See G2Enum.h for more detail
+        size_t     *Flags;      //Procedure dirty flags associated with Model Coefficients, See Enum.h for more detail
 
     protected:
         //Model parameters 
@@ -178,8 +178,10 @@ class G2PP : public RateModel{
 
         //----Getters & Setters-----
         inline void setParameter(size_t key, double value){
-            Coefs[key] = value;
-            markDirtyFrom(Flags[key]);
+            if (Coefs[key] != value){
+                Coefs[key] = value;
+                markDirtyFrom(Flags[key]);
+            }
         }
 
         inline void setParameters(size_t * keys, double * values, size_t len){
