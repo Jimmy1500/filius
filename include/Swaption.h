@@ -92,7 +92,7 @@ class Swaption : public RateInstrument{
         inline void setParameters(size_t * keys, double * values, size_t len){
             size_t i;
             if (len > SWPT::NUM_PARAMS){
-                REPORT_ERROR(Model->ModelError, "Number of parameters too great to be possible",0)
+                REPORT_ERROR(Model->ModelError, "Too many parameters to be expected",0)
             }
             for (i=0; i<len; ++i){ setParameter(keys[i], values[i]); }
         }
