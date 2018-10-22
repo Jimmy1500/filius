@@ -8,7 +8,7 @@
  *        Version:  1.0
  *        Created:  2018-10-21
  *       Revision:  none
- *       Compiler:  gcc
+ *       Compiler:  g++
  *
  *         Author:  James Ding
  *                  james.ding.illinois@gmail.com
