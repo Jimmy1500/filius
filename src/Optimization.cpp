@@ -38,7 +38,6 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t n
                 double gradient[num_params] = {0., 0., 0., 0., 0.};
 
                 Generator = new Rand<double>((num_params+1),1,0,1);
-                size_t i, iter = 0;
                 double factor = precision;  //improvement measure
                 double prob = 0.;           // neighboring state transition probability
                 double initial_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
@@ -46,6 +45,8 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t n
 
                 g2pp->getParameters(keys, curr_guess, num_params);
                 DEEPCOPY_ARRAY(next_guess, curr_guess, num_params);
+
+                size_t i, iter = 0;
                 do{
                     if ( !curr_temp ){
                         curr_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
