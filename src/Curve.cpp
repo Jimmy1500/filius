@@ -1,16 +1,5 @@
 #include "Curve.h"
 
-#define DeepCopy_YC(terms, prices)      \
-        size_t i;                       \
-        for (i = 0; i < Length; ++i){   \
-            Terms[i] = terms[i];        \
-            Values[i] = prices[i];      \
-        }
-
-#define ShallowCopy_YC(terms, prices)   \
-        Terms = terms;                  \
-        Values = prices;
-
 Curve::Curve(Curve * curve){ //Shallow
     *this = &(*curve);
 }

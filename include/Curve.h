@@ -23,6 +23,17 @@
 
 using namespace std;
 
+#define DeepCopy_YC(terms, prices)      \
+        size_t i;                       \
+        for (i = 0; i < Length; ++i){   \
+            Terms[i] = terms[i];        \
+            Values[i] = prices[i];      \
+        }
+
+#define ShallowCopy_YC(terms, prices)   \
+        Terms = terms;                  \
+        Values = prices;
+
 class Curve{
     private:
         double *Terms;     //Terms
