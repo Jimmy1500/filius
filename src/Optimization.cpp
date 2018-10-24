@@ -11,19 +11,19 @@ Optimization::~Optimization(){
 
 void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t num_instrs, double* weights, size_t max_iter, double precision, double k, double alpha, size_t num_trials){
     if ( precision <= 0.0 ) {
-        precision = 0.000000000000000000001;
+        precision = 1.e-12;
 #ifdef __DEBUG__
         DEBUG("precision must be greater than 0")
 #endif
     }
     if ( k <= 0.0 ) {
-        k = 0.000000000000000000001;
+        k = 1.e-12;
 #ifdef __DEBUG__
         DEBUG("k must be greater than 0")
 #endif
     }
     if ( alpha <= 0.0 ) {
-        precision = 0.000000000000000000001;
+        alpha = 1.e-12;
 #ifdef __DEBUG__
         DEBUG("alpha must be greater than 0")
 #endif
@@ -34,18 +34,16 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t n
             if ( G2PP * g2pp = dynamic_cast<G2PP *>(model) ){
                 const size_t num_params = 5; size_t keys[num_params] = {G2::A, G2::B, G2::SIGMA_1, G2::SIGMA_2, G2::RHO};
                 double curr_guess[num_params] = {0., 0., 0., 0., 0.};
-                double next_guess[num_params] = {0., 0., 0., 0., 0.};
                 double gradient[num_params] = {0., 0., 0., 0., 0.};
 
                 Generator = new Rand<double>((num_params+1),1,0,1);
                 double factor = precision;  //improvement measure
                 double prob = 0.;           // neighboring state transition probability
                 double initial_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
-                double curr_temp = initial_temp, next_temp = initial_temp;
+                double curr_temp = 0., next_temp = 0.;
+
 
                 g2pp->getParameters(keys, curr_guess, num_params);
-                DEEPCOPY_ARRAY(next_guess, curr_guess, num_params);
-
                 size_t i, iter = 0;
                 do{
                     if ( !curr_temp ){
@@ -56,28 +54,28 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t n
                     } 
 
                     getGradient(gradient, keys, num_params, model, instrs, weights, num_instrs);
-                    for (i = 0; i < num_params; ++i){ next_guess[i] += -alpha * gradient[i] + Generator->nrand(0, i); }
+                    for (i = 0; i < num_params; ++i){ 
+                        g2pp->setParameter( keys[i], (curr_guess[i] - alpha * gradient[i] + Generator->nrand(0, i)) );
+                    }
 
-                    g2pp->setParameters(keys, next_guess, num_params);
                     next_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
 
                     if ( isnan(next_temp) ){ continue; }
                     else if ( next_temp <= precision ) {
                         curr_temp = next_temp;
-                        DEEPCOPY_ARRAY(curr_guess, next_guess, num_params)
+                        g2pp->getParameters(keys, curr_guess, num_params);
                         break; //accept new state
                     }else if ( next_temp < curr_temp ){
                         curr_temp = next_temp;
-                        DEEPCOPY_ARRAY(curr_guess, next_guess, num_params)
+                        g2pp->getParameters(keys, curr_guess, num_params);
                         factor = curr_temp/initial_temp;
                     }else {
                         prob = exp( (curr_temp - next_temp) / (k * curr_temp) );
                         if ( Generator->urand(0, num_params) <= prob ){
                             curr_temp = next_temp;
-                            DEEPCOPY_ARRAY(curr_guess, next_guess, num_params)
+                            g2pp->getParameters(keys, curr_guess, num_params);
                         }else{
                             g2pp->setParameters(keys, curr_guess, num_params);
-                            DEEPCOPY_ARRAY(next_guess, curr_guess, num_params)
                         }
                     }
                     ++iter;
@@ -123,7 +121,7 @@ void Optimization::getGradient (double * gradient, size_t * param_keys, size_t n
 double Optimization::loss_function (RateInstrument * instrs, double * weights, size_t num_instrs, size_t order){
     double loss = 0;
     size_t i;
-    for ( i = 0; i < num_instrs; ++i){
+    for ( i = 0; i < num_instrs; ++i ){
         loss += weights[i] * instrs[i].getLoss(order);
     }
     return loss;
@@ -131,9 +129,11 @@ double Optimization::loss_function (RateInstrument * instrs, double * weights, s
 
 double Optimization::avg_loss (RateModel * model, RateInstrument * instrs, double * weights, size_t num_instrs, size_t num_trials, size_t order){
     size_t i;
-    double avg = 0;
-    for ( i = 0; i < num_trials; ++i){
-        model->markDirtyAll(); // ensure simulation process kicks in to recalculate
+    double avg = 0.;
+    for ( i = 0; i < num_trials; ++i ){
+#ifdef __DEBUG__
+        model->markDirtyAll(); 
+#endif
         avg += fabs(loss_function(instrs, weights, num_instrs, order));
     }
     return (avg/(double)num_trials);
