@@ -17,13 +17,13 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t n
 #endif
     }
     if ( k <= 0.0 ) {
-        k = 1.e-12;
+        k = 0.01;
 #ifdef __DEBUG__
         DEBUG("k must be greater than 0")
 #endif
     }
     if ( alpha <= 0.0 ) {
-        alpha = 1.0;
+        alpha = 0.5;
 #ifdef __DEBUG__
         DEBUG("alpha must be greater than 0")
 #endif
