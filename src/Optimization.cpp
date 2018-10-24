@@ -58,7 +58,6 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t n
                     }
 
                     next_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
-
                     if ( isnan(next_temp) ){
                         continue;
                     } else if ( next_temp <= precision ) {
@@ -78,7 +77,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t n
                     } else if ( next_temp < curr_temp ){
                         curr_temp = next_temp;
                         g2pp->getParameters(keys, curr_guess, num_params);
-                        factor = curr_temp/initial_temp;
+                        factor = curr_temp/initial_temp; //temperature improvement measure
                     } else {
                         prob = exp( (curr_temp - next_temp) / (k * curr_temp) );
                         if ( Generator->urand(0, num_params) <= prob ){
