@@ -65,14 +65,14 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t n
                         curr_temp = next_temp;
                         g2pp->getParameters(keys, curr_guess, num_params);
 #ifdef __DEBUG__
-                        cout<<"### iteration "<<iter<<" ###"<<<endl;
+                        cout<<"### iteration "<<iter<<" ###"<<endl;
                         cout<<"Current temperature: "<<curr_guess<<endl;
                         cout<<"Current parametric configuration: ";
                         for ( i = 0; i < num_params-1; ++i ){
                             cout<<curr_guess[i]<<",";
                         }
                         cout<<curr_guess[num_params-1]<<endl;
-                        cout<<"Current configuration has already achieved optimal temperature"<<end;
+                        cout<<"Current configuration has already achieved optimal temperature"<<endl;
 #endif
                         break;
                     } else if ( next_temp < curr_temp ){
@@ -90,7 +90,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t n
                     }
                     ++iter;
 #ifdef __DEBUG__
-                    cout<<"### iteration "<<iter<<" ###"<<<endl;
+                    cout<<"### iteration "<<iter<<" ###"<<endl;
                     cout<<"Current temperature: "<<curr_guess<<endl;
                     cout<<"Current parametric configuration: ";
                     for ( i = 0; i < num_params-1; ++i ){
@@ -150,7 +150,7 @@ double Optimization::avg_loss (RateModel * model, RateInstrument * instrs, doubl
     size_t i;
     double avg = 0.;
     for ( i = 0; i < num_trials; ++i ){
-#ifdef __DEBUG__
+#ifdef __REGEN__
         model->markDirtyAll(); 
 #endif
         avg += fabs(loss_function(instrs, weights, num_instrs, order));
