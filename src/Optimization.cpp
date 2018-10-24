@@ -48,6 +48,15 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t n
                 size_t i, iter = 0;
                 do{
                     if ( curr_temp <= precision ) {
+#ifdef __DEBUG__
+                        cout<<"### iteration "<<iter<<" ###"<<endl;
+                        cout<<"Current temperature: "<<curr_guess<<endl;
+                        cout<<"Current parametric configuration: ";
+                        for ( i = 0; i < num_params-1; ++i ){
+                            cout<<curr_guess[i]<<",";
+                        }
+                        cout<<curr_guess[num_params-1]<<endl;
+#endif
                         break; //accept current state
                     } 
 
@@ -71,9 +80,8 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t n
                             cout<<curr_guess[i]<<",";
                         }
                         cout<<curr_guess[num_params-1]<<endl;
-                        cout<<"Current configuration has already achieved optimal temperature"<<endl;
 #endif
-                        break;
+                        break; //accept current state
                     } else if ( next_temp < curr_temp ){
                         curr_temp = next_temp;
                         g2pp->getParameters(keys, curr_guess, num_params);
@@ -98,6 +106,10 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t n
                     cout<<curr_guess[num_params-1]<<endl;
 #endif
                 }while ( iter < max_iter && factor >= precision );
+#ifdef __DEBUG__
+                cout<<"Current configuration has already achieved optimal temperature"<<endl;
+#endif
+
             }
             break;
         case RMT_BLACK:
