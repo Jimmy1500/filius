@@ -11,7 +11,7 @@ Optimization::~Optimization(){
 
 void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t num_instrs, double* weights, size_t max_iter, double precision, double k, double alpha, size_t num_trials){
     if ( precision <= 0.0 ) {
-        precision = 1.e-12;
+        precision = 1.e-17;
 #ifdef __DEBUG__
         DEBUG("precision must be greater than 0")
 #endif
@@ -23,7 +23,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t n
 #endif
     }
     if ( alpha <= 0.0 ) {
-        alpha = 1.e-12;
+        alpha = 1.0;
 #ifdef __DEBUG__
         DEBUG("alpha must be greater than 0")
 #endif
@@ -32,53 +32,72 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, size_t n
     switch (model->getModelType()){
         case RMT_G2PP:
             if ( G2PP * g2pp = dynamic_cast<G2PP *>(model) ){
-                const size_t num_params = 5; size_t keys[num_params] = {G2::A, G2::B, G2::SIGMA_1, G2::SIGMA_2, G2::RHO};
+                const size_t num_params = 5;
+
+                size_t keys[num_params] = {G2::A, G2::B, G2::SIGMA_1, G2::SIGMA_2, G2::RHO};
                 double curr_guess[num_params] = {0., 0., 0., 0., 0.};
                 double gradient[num_params] = {0., 0., 0., 0., 0.};
 
-                Generator = new Rand<double>((num_params+1),1,0,1);
-                double factor = precision;  //improvement measure
-                double prob = 0.;           // neighboring state transition probability
+                double factor = precision;
                 double initial_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
-                double curr_temp = 0., next_temp = 0.;
-
+                double curr_temp = initial_temp, next_temp = initial_temp, prob = 0.;
 
                 g2pp->getParameters(keys, curr_guess, num_params);
+                Generator = new Rand<double>((num_params+1),1,0,1);
+
                 size_t i, iter = 0;
                 do{
-                    if ( !curr_temp ){
-                        curr_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
-                    }
-                    else if ( curr_temp <= precision ) {
+                    if ( curr_temp <= precision ) {
                         break; //accept current state
                     } 
 
                     getGradient(gradient, keys, num_params, model, instrs, weights, num_instrs);
                     for (i = 0; i < num_params; ++i){ 
+                        // stochastic descent (simulated annealing w. local optimizer)
                         g2pp->setParameter( keys[i], (curr_guess[i] - alpha * gradient[i] + Generator->nrand(0, i)) );
                     }
 
                     next_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
 
-                    if ( isnan(next_temp) ){ continue; }
-                    else if ( next_temp <= precision ) {
+                    if ( isnan(next_temp) ){
+                        continue;
+                    } else if ( next_temp <= precision ) {
                         curr_temp = next_temp;
                         g2pp->getParameters(keys, curr_guess, num_params);
-                        break; //accept new state
-                    }else if ( next_temp < curr_temp ){
+#ifdef __DEBUG__
+                        cout<<"### iteration "<<iter<<" ###"<<<endl;
+                        cout<<"Current temperature: "<<curr_guess<<endl;
+                        cout<<"Current parametric configuration: ";
+                        for ( i = 0; i < num_params-1; ++i ){
+                            cout<<curr_guess[i]<<",";
+                        }
+                        cout<<curr_guess[num_params-1]<<endl;
+                        cout<<"Current configuration has already achieved optimal temperature"<<end;
+#endif
+                        break;
+                    } else if ( next_temp < curr_temp ){
                         curr_temp = next_temp;
                         g2pp->getParameters(keys, curr_guess, num_params);
                         factor = curr_temp/initial_temp;
-                    }else {
+                    } else {
                         prob = exp( (curr_temp - next_temp) / (k * curr_temp) );
                         if ( Generator->urand(0, num_params) <= prob ){
                             curr_temp = next_temp;
                             g2pp->getParameters(keys, curr_guess, num_params);
-                        }else{
+                        } else{
                             g2pp->setParameters(keys, curr_guess, num_params);
                         }
                     }
                     ++iter;
+#ifdef __DEBUG__
+                    cout<<"### iteration "<<iter<<" ###"<<<endl;
+                    cout<<"Current temperature: "<<curr_guess<<endl;
+                    cout<<"Current parametric configuration: ";
+                    for ( i = 0; i < num_params-1; ++i ){
+                        cout<<curr_guess[i]<<",";
+                    }
+                    cout<<curr_guess[num_params-1]<<endl;
+#endif
                 }while ( iter < max_iter && factor >= precision );
             }
             break;
