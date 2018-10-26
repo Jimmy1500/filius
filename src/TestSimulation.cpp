@@ -22,7 +22,8 @@ int main(){
         exp(-.0307*stl[9]), exp(-.0313*stl[10])
     };
     Curve YieldCurve = Curve(stl, price, N);
-    Swaption * swaption = new Swaption(model);
+    RateInstrument * instr = new Swaption(model);
+    Swaption * swaption = dynamic_cast< Swaption * > (instr);
     
     try{
         size_t peris_keys[] = {G2::NTERMS, G2::NPATHS, G2::NDIMS, G2::NTHREADS};
@@ -124,8 +125,14 @@ int main(){
         swaption->setParameter(SWPT::STK, strike);
         swaption->setParameter(SWPT::STL, t);
         swaption->setTerms(terms, NN);
+        swaption->setMarketValue(8.01);
 
+        cout<<"Instrument Type = "<<(swaption->getInstrumentType()==RIT_SWAPTION ? "Swaption" : "Unknown")<<endl;
+        cout<<"Instrument Value = "<<swaption->getModelValue()<<endl;
+        cout<<"Instrument Market Value = "<<swaption->getMarketValue()<<endl;
+        cout<<"Instrument Loss = "<<swaption->getLoss(2)<<endl;
         cout<<"Pricing "<<swaption->getInstrumentDescription()<<endl;
+
         //g2pp->setPeriphery(G2::PERI::NTHREADS, 1);
         Time = 0.0; AVG = 0.0;
         for (i = 0; i < nterms; i++){
@@ -145,7 +152,7 @@ int main(){
         <<endl;
     }
 
-    thread garbage = thread([swaption, model]()->void{ delete swaption; delete model; });
+    thread garbage = thread([instr, model]()->void{ delete instr; delete model; });
     garbage.detach();
 
     return 0;
