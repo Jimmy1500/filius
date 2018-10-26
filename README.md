@@ -20,8 +20,17 @@
     2. Orstein-Ulhenback system with multiple degrees of freedom  
     * Can easily be extended to integrate support for additional interest rate models  
 
+* Currently supported data calibration method  
+    1. Simulate Annealing with Gradient Descent (Global Optimizer)  
+
+* Future support/To do:  
+    * Feed-Forward Convolutional Neural Network Pricing Support  
+    * Statistical Model Selection Module
+
 * Theoretical references  
     [Gn++](http://www.dm.unibo.it/~pascucci/web/Ricerca/PDF/difra.pdf)
+    [Deep Learning](http://www.deeplearningbook.org/)
+    [CNN Design](doc/CNN.pdf)
 
 * Version  
 	1.0
