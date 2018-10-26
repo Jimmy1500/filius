@@ -23,6 +23,7 @@
 static mutex mtx;
 
 enum RateModelType {RMT_G2PP=0, RMT_BLACK, NUM_MODEL_TYPES};
+enum RateInstrumentType{RIT_SWAPTION=0};
 
 namespace G2
 {

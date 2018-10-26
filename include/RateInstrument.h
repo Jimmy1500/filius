@@ -22,7 +22,6 @@
 
 using namespace std;
 
-enum RateInstrumentType{RIT_SWAPTION=0};
 
 class RateInstrument{
     protected:
