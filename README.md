@@ -30,7 +30,10 @@
 * Theoretical references  
     [Gn++](http://www.dm.unibo.it/~pascucci/web/Ricerca/PDF/difra.pdf)  
     [Deep Learning](http://www.deeplearningbook.org/)  
-    [CNN Design - Working Paper](doc/CNN.pdf)
+
+* Idea and designs by author  
+    [Model Design - Work in progress](doc/G2++_Math.pdf)  
+    [CNN Design - Work in progress](doc/CNN.pdf)
 
 * Version  
 	1.0
