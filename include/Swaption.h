@@ -68,6 +68,7 @@ class Swaption : public RateInstrument{
         double  Payoff;       //Intermediate Payoff
 
     public:
+        Swaption();
         Swaption(RateModel *);
         ~Swaption();
 
@@ -76,12 +77,15 @@ class Swaption : public RateInstrument{
 
         //--------------------------------Setters----------------------------------------------
         inline void setRateModel(RateModel * model){
-            if (Model){
-                if (Model->getModelDescription() != model->getModelDescription()){
-                    Description.erase(15); Description.append(model->getModelDescription());
-                }
-            }else{ Description.append(model->getModelDescription()); }
-            Model = model;
+            if (model){
+                if (Model){
+                    Description.erase(14);
+                    if (Model->getModelDescription() != model->getModelDescription()){
+                        Description.append(model->getModelDescription());
+                    }
+                }else{ Description.append(model->getModelDescription()); }
+                Model = model;
+            }
         }
 
         inline void setParameter(size_t key, double value){

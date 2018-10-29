@@ -1,7 +1,22 @@
 #include "Swaption.h"
 
+Swaption::Swaption()
+    : RateInstrument(RateInstrumentType::RIT_SWAPTION, "Swaption with "),
+    Model(nullptr),
+    Params(new size_t[SWPT::NUM_PARAMS]()),
+    Flags (new size_t[SWPT::NUM_PARAMS]),
+    Dirty(0),
+    Prices(nullptr),
+    Payoff(0.)
+{
+    if (Model){ Description.append( "undefined interest model" ); }
+    Flags[SWPT::NTL] = SWPT::GET_VALUE;
+    Flags[SWPT::STK] = SWPT::GET_PAYOFF;
+    Flags[SWPT::STL] = SWPT::GET_ZCBP;
+}
+
 Swaption::Swaption(RateModel* model)
-    : RateInstrument(RateInstrumentType::RIT_SWAPTION, "Swaption under "),
+    : RateInstrument(RateInstrumentType::RIT_SWAPTION, "Swaption with "),
     Model(model),
     Params(new size_t[SWPT::NUM_PARAMS]()),
     Flags (new size_t[SWPT::NUM_PARAMS]),
