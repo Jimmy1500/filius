@@ -9,7 +9,6 @@ Swaption::Swaption()
     Prices(nullptr),
     Payoff(0.)
 {
-    if (Model){ Description.append( "undefined interest model" ); }
     Flags[SWPT::NTL] = SWPT::GET_VALUE;
     Flags[SWPT::STK] = SWPT::GET_PAYOFF;
     Flags[SWPT::STL] = SWPT::GET_ZCBP;
