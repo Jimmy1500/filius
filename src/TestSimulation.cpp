@@ -144,15 +144,14 @@ int main(){
             Time += elapsed.count(); AVG += swaption_model_value;
         }
         cout<<"Average Cost: "<<Time/(double)i<<" milliseconds"<<endl;
-        cout<<"Average Price: "<<AVG/(double)i<<endl;
+        cout<<"Average Price: "<<AVG/(double)i<<endl<<endl;;
 
         const size_t num_instrs = 5;
-        Swaption * swpts = new Swaption[num_instrs];
+        Swaption swpts[num_instrs] = {Swaption(g2pp), Swaption(g2pp), Swaption(g2pp), Swaption(g2pp), Swaption(g2pp)};
+        double weights[num_instrs] = {0.3, 0.5, 1.0, 0.4, 0.2};
         for (i = 0; i < num_instrs; ++i){
-            swpts[i].setRateModel(g2pp);
-            cout<<swpts[i].getInstrumentDescription()<<endl;
+            cout<<"Instrument: "<<swpts[i].getInstrumentDescription()<<", allocated weight: "<<weights[i]<<endl;
         }
-        delete [] swpts;
 
     }catch(int code){
         cout<<
