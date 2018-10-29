@@ -146,9 +146,13 @@ int main(){
         cout<<"Average Cost: "<<Time/(double)i<<" milliseconds"<<endl;
         cout<<"Average Price: "<<AVG/(double)i<<endl;
 
-        size_t num_instrs = 5;
+        const size_t num_instrs = 5;
         Swaption * swpts = new Swaption[num_instrs];
-        delete swpts;
+        for (i = 0; i < num_instrs; ++i){
+            swpts[i].setRateModel(g2pp);
+            cout<<swpts[i].getInstrumentDescription()<<endl;
+        }
+        delete [] swpts;
 
     }catch(int code){
         cout<<
