@@ -146,6 +146,10 @@ int main(){
         cout<<"Average Cost: "<<Time/(double)i<<" milliseconds"<<endl;
         cout<<"Average Price: "<<AVG/(double)i<<endl;
 
+        size_t num_instrs = 5;
+        Swaption * swpts = new Swaption[num_instrs];
+        delete swpts;
+
     }catch(int code){
         cout<<
         model->ModelError.Message<<"@"<<model->ModelError.Function<<":"<<model->ModelError.File<<":"<<model->ModelError.Line
