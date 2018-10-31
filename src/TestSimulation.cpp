@@ -152,6 +152,8 @@ int main(){
         for (i = 0; i < num_instrs; ++i){
             cout<<"Instrument: "<<swpts[i].getInstrumentDescription()<<", allocated weight: "<<weights[i]<<endl;
         }
+        Optimization * opt = new Optimization();
+        delete opt;
 
     }catch(int code){
         cout<<
