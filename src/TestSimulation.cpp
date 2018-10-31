@@ -148,7 +148,7 @@ int main(){
 
         const size_t num_instrs = 5;
         Swaption swpts[num_instrs] = {Swaption(g2pp), Swaption(g2pp), Swaption(g2pp), Swaption(g2pp), Swaption(g2pp)};
-        double weights[num_instrs] = {0.3, 0.5, 1.0, 0.4, 0.2};
+        double weights[num_instrs] = {0.7, 0.8, 1.0, 0.9, 0.85};
         for (i = 0; i < num_instrs; ++i){
             cout<<"Instrument: "<<swpts[i].getInstrumentDescription()<<", allocated weight: "<<weights[i]<<endl;
         }
