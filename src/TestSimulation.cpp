@@ -147,12 +147,14 @@ int main(){
         cout<<"Average Price: "<<AVG/(double)i<<endl<<endl;;
 
         const size_t num_instrs = 5;
+        const size_t max_iter = 210;
         Swaption swpts[num_instrs] = {Swaption(g2pp), Swaption(g2pp), Swaption(g2pp), Swaption(g2pp), Swaption(g2pp)};
         double weights[num_instrs] = {0.7, 0.8, 1.0, 0.9, 0.85};
         for (i = 0; i < num_instrs; ++i){
             cout<<"Instrument: "<<swpts[i].getInstrumentDescription()<<", allocated weight: "<<weights[i]<<endl;
         }
         Optimization * opt = new Optimization();
+        opt->calibrate(g2pp, swpts, weights, num_instrs, max_iter);
         delete opt;
 
     }catch(int code){
