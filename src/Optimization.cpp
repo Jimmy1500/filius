@@ -1,6 +1,6 @@
 #include "Optimization.h"
 
-Optimization::Optimization(){}
+Optimization::Optimization() : Generator(nullptr){}
 
 Optimization::~Optimization(){
     if (Generator) {
