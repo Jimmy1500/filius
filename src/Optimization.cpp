@@ -159,12 +159,14 @@ double Optimization::loss_function (RateInstrument * instrs, double * weights, s
 
 double Optimization::avg_loss (RateModel * model, RateInstrument * instrs, double * weights, size_t num_instrs, size_t num_trials, size_t order){
     size_t i;
+#ifdef __REGEN__
     double avg = 0.;
     for ( i = 0; i < num_trials; ++i ){
-#ifdef __REGEN__
         model->markDirtyAll(); 
-#endif
         avg += fabs(loss_function(instrs, weights, num_instrs, order));
     }
     return (avg/(double)num_trials);
+#else
+    return fabs(loss_function(instrs, weights, num_instrs, order));
+#endif
 }
