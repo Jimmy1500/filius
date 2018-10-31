@@ -33,7 +33,7 @@ G2PP.so: ${OBJ}G2PP.o ${OBJ}Simulation.o ${OBJ}Curve.o
 Optimization.so: ${OBJ}Optimization.o ${LIB}G2PP.so ${OBJ}Swaption.o
 	${CXX} ${CXXFLAGS} -shared $^ -o ${LIB}$@
 
-TestSimulation: ${OBJ}TestSimulation.o ${OBJ}Swaption.o ${LIB}G2PP.so
+TestSimulation: ${OBJ}TestSimulation.o ${OBJ}Swaption.o ${LIB}G2PP.so ${LIB}Optimization.so
 	${CXX} ${CXXFLAGS} $^ -o ${BIN}$@
 
 .PHONY: clean build run
