@@ -148,9 +148,9 @@ int main(){
         cout<<"Average Cost: "<<Time/(double)i<<" milliseconds"<<endl;
         cout<<"Average Price: "<<AVG/(double)i<<endl<<endl;;
 
-        const size_t num_instrs = 5, max_iter = 210;
-        Swaption swpts[num_instrs] = {Swaption(g2pp), Swaption(g2pp), Swaption(g2pp), Swaption(g2pp), Swaption(g2pp)};
-        double weights[num_instrs] = {0.7, 0.8, 1.0, 0.9, 0.85};
+        const size_t num_instrs = 1, max_iter = 210;
+        Swaption swpts[num_instrs] = {*swaption};
+        double weights[num_instrs] = {1.0};
 
         for (i = 0; i < num_instrs; ++i){
             cout<<"Setting swaption with allocated weight: "<<weights[i]<<endl;
