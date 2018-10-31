@@ -35,7 +35,7 @@ class Optimization{
         Optimization();
         ~Optimization();
         
-        void calibrate (RateModel *, RateInstrument *, double *, size_t, size_t, double precision=1.e-12, double k=0.01, double alpha=0.5, size_t loss_trials=5);
+        void calibrate (RateModel *, RateInstrument *, double *, size_t, size_t, double precision=1.e-12, double k=0.01, double alpha=0.5, size_t loss_trials=3);
         void getGradient (double *, size_t *, size_t, RateModel *, RateInstrument *, double *, size_t);
         double loss_function (RateInstrument *, double *, size_t,  size_t order = 2);
         double avg_loss (RateModel *, RateInstrument *, double *, size_t,  size_t , size_t order = 2);
