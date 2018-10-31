@@ -220,14 +220,9 @@ double G2PP::getZCBP(double t, double T){
 
 void G2PP::getZCBP(double * prices, double * t, double T, size_t nterms){
     if ( !prices ){ REPORT_ERROR(ModelError, "Zero coupon bond output container corrupted", 0) }
-    else if (prices[0] != 0.0 || prices[nterms-1] != 0.0){
-        fill(prices, prices+nterms, 0.0);
-    }
-    if (!nterms){
-#ifdef __DEBUG__
-        DEBUG("User indicates output container size is zero, calculation will not commence")
-#endif
-    }else{
+    else if (!nterms){ REPORT_ERROR(ModelError, "User indicates output container size is zero, calculation will not commence", 0) }
+    else if (prices[0] != 0.0 || prices[nterms-1] != 0.0){ fill(prices, prices+nterms, 0.0); }
+    else{
         size_t npaths = Peris[G2::NPATHS];
         size_t ndims = Peris[G2::NDIMS];
         size_t nthreads = Peris[G2::NTHREADS];
