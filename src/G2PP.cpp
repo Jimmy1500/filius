@@ -547,22 +547,18 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
 
 void G2PP::getZCBP(double ** prices, double t, double * T, size_t nterms, size_t npaths){
     if ( !prices ){ REPORT_ERROR(ModelError, "Zero coupon bond output container corrupted", 0) }
+    else if ( !nterms || !npaths ){ REPORT_ERROR(ModelError, "User indicates output container size is zero, calculation will not commence", 0) }
+    else if ( npaths != Peris[G2::NPATHS] ){ REPORT_ERROR(ModelError, "Simulation output periphery doesn't match user specification: npaths", 0) }
     else {
+        if ( Settlement != t ){ Settlement = t; markDirtyFrom(G2::EVOLUTION); }
+
         size_t i;
         for ( i = 0; i < npaths; ++i ){ 
             if ( prices[i][0] != 0.0 || prices[i][nterms-1] != 0.0 ){
                 fill(prices[i], prices[i]+nterms, 0.0); 
             }
         }
-    }
-    if ( Settlement != t ){ Settlement = t; markDirtyFrom(G2::EVOLUTION); }
-    if ( !nterms || !npaths ){
-#ifdef __DEBUG__
-        DEBUG("User indicates output container size is zero, calculation will not commence")
-#endif
-    }else if ( npaths != Peris[G2::NPATHS] ){
-        REPORT_ERROR(ModelError, "Simulation output periphery doesn't match user specification: npaths", 0)
-    }else{
+
         size_t ndims    = Peris[G2::NDIMS];
         size_t nthreads = Peris[G2::NTHREADS];
 
@@ -633,7 +629,7 @@ void G2PP::getZCBP(double ** prices, double t, double * T, size_t nterms, size_t
                     }
                 default:
                     {
-                        size_t last_thread = nthreads-1, paths_per_thread = (npaths - (npaths % nthreads))/nthreads, i;
+                        size_t last_thread = nthreads-1, paths_per_thread = (npaths - (npaths % nthreads))/nthreads;
                         thread * threads = new thread[nthreads];
                         for (i = 0; i < last_thread; ++i){
                             threads[i] = thread([this,nterms,i,paths_per_thread,a,b,vol1,vol2,rho,chol_y,t,T,X,Y,prices]()->void{
