@@ -119,18 +119,20 @@ int main(){
         cout<<"Average cost:\t"<<Time/(double)j<<" milliseconds"<<endl;
         cout<<"Average value:\t"<<AVG/((double)j)<<endl<<endl;
 
-        double notional = 100; double strike = 0.02; const size_t NN = 12;
+        double notional = 100, strike = 0.02;
+        const size_t NN = 12, num_params = 3;
         double terms[NN] = {t+3./12, t+6./12, t+9./12, t+12./12, t+15./12., t+18./12, t+21./12, t+24./12, t+27./12, t+30./12, t+33./12, t+36./12};
-        swaption->setParameter(SWPT::NTL, notional);
-        swaption->setParameter(SWPT::STK, strike);
-        swaption->setParameter(SWPT::STL, t);
+        size_t swpt_keys[num_params] = {SWPT::NTL, SWPT::STK, SWPT::STL};
+        double swpt_values[num_params] = {notional, strike, t};
+
+        swaption->setParameters(swpt_keys, swpt_values, num_params);
         swaption->setTerms(terms, NN);
         swaption->setMarketValue(8.01);
 
-        cout<<"Instrument Type = "<<(swaption->getInstrumentType()==RIT_SWAPTION ? "Swaption" : "Unknown")<<endl;
-        cout<<"Instrument Value = "<<swaption->getModelValue()<<endl;
-        cout<<"Instrument Market Value = "<<swaption->getMarketValue()<<endl;
-        cout<<"Instrument Loss = "<<swaption->getLoss(2)<<endl;
+        cout<<"Instrument Type: "<<(swaption->getInstrumentType()==RIT_SWAPTION ? "Swaption" : "Unknown")<<endl;
+        cout<<"Instrument Model Value: "<<swaption->getModelValue()<<endl;
+        cout<<"Instrument Market Value: "<<swaption->getMarketValue()<<endl;
+        cout<<"Instrument Loss(order=2): "<<swaption->getLoss(2)<<endl;
         cout<<"Pricing "<<swaption->getInstrumentDescription()<<endl;
 
         //g2pp->setPeriphery(G2::PERI::NTHREADS, 1);
@@ -146,12 +148,15 @@ int main(){
         cout<<"Average Cost: "<<Time/(double)i<<" milliseconds"<<endl;
         cout<<"Average Price: "<<AVG/(double)i<<endl<<endl;;
 
-        const size_t num_instrs = 5;
-        const size_t max_iter = 210;
+        const size_t num_instrs = 5, max_iter = 210;
         Swaption swpts[num_instrs] = {Swaption(g2pp), Swaption(g2pp), Swaption(g2pp), Swaption(g2pp), Swaption(g2pp)};
         double weights[num_instrs] = {0.7, 0.8, 1.0, 0.9, 0.85};
+
         for (i = 0; i < num_instrs; ++i){
-            cout<<"Instrument: "<<swpts[i].getInstrumentDescription()<<", allocated weight: "<<weights[i]<<endl;
+            cout<<"Setting swaption with allocated weight: "<<weights[i]<<endl;
+            swpts[i].setParameters(swpt_keys, swpt_values, num_params);
+            swpts[i].setTerms(terms, NN);
+            swpts[i].setMarketValue(8.00 + .01*i);
         }
         Optimization * opt = new Optimization();
         opt->calibrate(g2pp, swpts, weights, num_instrs, max_iter);
