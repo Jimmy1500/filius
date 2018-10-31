@@ -98,7 +98,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                     ++iter;
 #ifdef __DEBUG__
                     cout<<"### iteration "<<iter<<" ###"<<endl;
-                    cout<<"Current temperature: "<<curr_guess<<endl;
+                    cout<<"Current temperature: "<<curr_temp<<endl;
                     cout<<"Current parametric configuration: ";
                     for ( i = 0; i < num_params-1; ++i ){
                         cout<<curr_guess[i]<<",";
@@ -109,7 +109,6 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
 #ifdef __DEBUG__
                 cout<<"Current configuration has already achieved optimal temperature"<<endl;
 #endif
-
             }
             break;
         case RMT_BLACK:
