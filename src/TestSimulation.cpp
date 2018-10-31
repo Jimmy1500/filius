@@ -119,11 +119,10 @@ int main(){
         cout<<"Average cost:\t"<<Time/(double)j<<" milliseconds"<<endl;
         cout<<"Average value:\t"<<AVG/((double)j)<<endl<<endl;
 
-        double notional = 100, strike = 0.02;
         const size_t NN = 12, num_params = 3;
         double terms[NN] = {t+3./12, t+6./12, t+9./12, t+12./12, t+15./12., t+18./12, t+21./12, t+24./12, t+27./12, t+30./12, t+33./12, t+36./12};
-        size_t swpt_keys[num_params] = {SWPT::NTL, SWPT::STK, SWPT::STL};
-        double swpt_values[num_params] = {notional, strike, t};
+        size_t swpt_keys  [num_params] = {SWPT::NTL, SWPT::STK, SWPT::STL};
+        double swpt_values[num_params] = {      100,       .02,       t  };
 
         swaption->setParameters(swpt_keys, swpt_values, num_params);
         swaption->setTerms(terms, NN);
