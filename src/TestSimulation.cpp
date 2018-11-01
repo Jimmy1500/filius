@@ -156,7 +156,7 @@ int main(){
             cout<<"Setting swaption with allocated weight: "<<weights[i]<<endl;
             swpts[i].setParameters(swpt_keys, swpt_values, num_params);
             swpts[i].setTerms(terms, NN);
-            swpts[i].setMarketValue(7.98 + .01*(double)i);
+            swpts[i].setMarketValue(8.07 + .01*(double)i);
         }
         Optimization * opt = new Optimization();
         opt->calibrate(g2pp, swpts, weights, num_instrs, max_iter);
