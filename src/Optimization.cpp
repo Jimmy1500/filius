@@ -11,7 +11,7 @@ Optimization::~Optimization(){
 
 void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* weights, size_t num_instrs, size_t max_iter, double precision, double k, double alpha, size_t num_trials){
     if ( precision <= 0.0 ) {
-        precision = 1.e-12;
+        precision = 1.e-6;
 #ifdef __DEBUG__
         DEBUG("precision must be greater than 0")
 #endif
@@ -23,7 +23,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
 #endif
     }
     if ( alpha <= 0.0 ) {
-        alpha = 0.5;
+        alpha = 0.01;
 #ifdef __DEBUG__
         DEBUG("alpha must be greater than 0")
 #endif
@@ -50,20 +50,30 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                     if ( curr_temp <= precision ) {
 #ifdef __DEBUG__
                         cout<<"### iteration "<<iter<<" ###"<<endl;
-                        cout<<"Current temperature: "<<curr_guess<<endl;
+                        cout<<"Current temperature: "<<curr_temp<<endl;
                         cout<<"Current parametric configuration: ";
                         for ( i = 0; i < num_params-1; ++i ){
                             cout<<curr_guess[i]<<",";
                         }
                         cout<<curr_guess[num_params-1]<<endl;
+                        cout<<"### Accepting current state ###"<<endl;
 #endif
                         break; //accept current state
                     } 
 
                     getGradient(gradient, keys, num_params, model, instrs, weights, num_instrs);
+#ifdef __DEBUG__
+                    cout<<"Current gradient: ";
+                    for (i = 0; i < num_params; ++i){ 
+                        cout<<gradient[i]<<",";
+                    }
+                    cout<<endl;
+#endif
                     for (i = 0; i < num_params; ++i){ 
                         // stochastic descent (simulated annealing w. local optimizer)
-                        g2pp->setParameter( keys[i], (curr_guess[i] - alpha * gradient[i] + Generator->nrand(0, i)) );
+                        curr_guess[i] += ( Generator->nrand(0, i) - alpha * gradient[i] );
+                        applyBoundaries(keys, curr_guess, num_params);
+                        g2pp->setParameter(keys[i], curr_guess[i]);
                     }
 
                     next_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
@@ -74,12 +84,13 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                         g2pp->getParameters(keys, curr_guess, num_params);
 #ifdef __DEBUG__
                         cout<<"### iteration "<<iter<<" ###"<<endl;
-                        cout<<"Current temperature: "<<curr_guess<<endl;
+                        cout<<"Current temperature: "<<curr_temp<<endl;
                         cout<<"Current parametric configuration: ";
                         for ( i = 0; i < num_params-1; ++i ){
                             cout<<curr_guess[i]<<",";
                         }
                         cout<<curr_guess[num_params-1]<<endl;
+                        cout<<"### Accepting current state ###"<<endl;
 #endif
                         break; //accept current state
                     } else if ( next_temp < curr_temp ){
@@ -99,11 +110,13 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
 #ifdef __DEBUG__
                     cout<<"### iteration "<<iter<<" ###"<<endl;
                     cout<<"Current temperature: "<<curr_temp<<endl;
+                    cout<<"Next temperature: "<<next_temp<<endl;
                     cout<<"Current parametric configuration: ";
                     for ( i = 0; i < num_params-1; ++i ){
                         cout<<curr_guess[i]<<",";
                     }
                     cout<<curr_guess[num_params-1]<<endl;
+                    cout<<"### Continue iteration ###"<<endl;
 #endif
                 }while ( iter < max_iter && factor >= precision );
 #ifdef __DEBUG__
@@ -168,4 +181,25 @@ double Optimization::avg_loss (RateModel * model, RateInstrument * instrs, doubl
 #else
     return fabs(loss_function(instrs, weights, num_instrs, order));
 #endif
+}
+
+void Optimization::applyBoundaries(size_t * keys, double * values, size_t num_params){
+    size_t i;
+    for ( i = 0; i < num_params; ++i) {
+        switch (keys[i]){
+            case G2::A:
+            case G2::B:
+            case G2::SIGMA_1:
+            case G2::SIGMA_2:
+                values[i] = ( values[i] < 0.0 ? 0.0 : values[i] );
+                break;
+            case G2::RHO:
+                if ( values[i] > 1.0 ) {
+                    values[i] = 1.0;
+                }else if ( values[i] < 0.0 ) {
+                    values[i] = 0.0;
+                }
+                break;
+        }
+    }
 }
