@@ -36,6 +36,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
 
                 size_t keys[num_params] = {G2::A, G2::B, G2::SIGMA_1, G2::SIGMA_2, G2::RHO};
                 double curr_guess[num_params] = {0., 0., 0., 0., 0.};
+                double next_guess[num_params] = {0., 0., 0., 0., 0.};
                 double gradient[num_params] = {0., 0., 0., 0., 0.};
 
                 double factor = precision;
@@ -48,21 +49,12 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                 size_t i, iter = 0;
                 do{
                     if ( curr_temp <= precision ) {
-#ifdef __DEBUG__
-                        cout<<"### iteration "<<iter<<" ###"<<endl;
-                        cout<<"Current temperature: "<<curr_temp<<endl;
-                        cout<<"Current parametric configuration: ";
-                        for ( i = 0; i < num_params-1; ++i ){
-                            cout<<curr_guess[i]<<",";
-                        }
-                        cout<<curr_guess[num_params-1]<<endl;
-                        cout<<"### Accepting current state ###"<<endl;
-#endif
                         break; //accept current state
                     } 
 
                     getGradient(gradient, keys, num_params, model, instrs, weights, num_instrs);
 #ifdef __DEBUG__
+                    cout<<"### iteration "<<(iter+1)<<" ###"<<endl;
                     cout<<"Current gradient: ";
                     for (i = 0; i < num_params; ++i){ 
                         cout<<gradient[i]<<",";
@@ -71,10 +63,10 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
 #endif
                     for (i = 0; i < num_params; ++i){ 
                         // stochastic descent (simulated annealing w. local optimizer)
-                        curr_guess[i] += ( Generator->nrand(0, i) - alpha * gradient[i] );
-                        applyBoundaries(keys, curr_guess, num_params);
-                        g2pp->setParameter(keys[i], curr_guess[i]);
+                        next_guess[i] += Generator->nrand(0, i) - alpha * gradient[i];
                     }
+                    applyBoundaries(keys, next_guess, num_params);
+                    g2pp->setParameters(keys, next_guess, num_params);
 
                     next_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
                     if ( isnan(next_temp) ){
@@ -82,16 +74,6 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                     } else if ( next_temp <= precision ) {
                         curr_temp = next_temp;
                         g2pp->getParameters(keys, curr_guess, num_params);
-#ifdef __DEBUG__
-                        cout<<"### iteration "<<iter<<" ###"<<endl;
-                        cout<<"Current temperature: "<<curr_temp<<endl;
-                        cout<<"Current parametric configuration: ";
-                        for ( i = 0; i < num_params-1; ++i ){
-                            cout<<curr_guess[i]<<",";
-                        }
-                        cout<<curr_guess[num_params-1]<<endl;
-                        cout<<"### Accepting current state ###"<<endl;
-#endif
                         break; //accept current state
                     } else if ( next_temp < curr_temp ){
                         curr_temp = next_temp;
@@ -108,7 +90,6 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                     }
                     ++iter;
 #ifdef __DEBUG__
-                    cout<<"### iteration "<<iter<<" ###"<<endl;
                     cout<<"Current temperature: "<<curr_temp<<endl;
                     cout<<"Next temperature: "<<next_temp<<endl;
                     cout<<"Current parametric configuration: ";
@@ -116,11 +97,17 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                         cout<<curr_guess[i]<<",";
                     }
                     cout<<curr_guess[num_params-1]<<endl;
-                    cout<<"### Continue iteration ###"<<endl;
+                    cout<<"### Continue iteration ..."<<endl;
 #endif
                 }while ( iter < max_iter && factor >= precision );
 #ifdef __DEBUG__
-                cout<<"Current configuration has already achieved optimal temperature"<<endl;
+                cout<<"### Accepted state ###"<<endl;
+                cout<<"Accepted temperature: "<<curr_temp<<endl;
+                cout<<"Accepted parametric configuration: ";
+                for ( i = 0; i < num_params-1; ++i ){
+                    cout<<curr_guess[i]<<",";
+                }
+                cout<<curr_guess[num_params-1]<<endl;
 #endif
             }
             break;
