@@ -148,7 +148,7 @@ int main(){
         cout<<"Average Cost: "<<Time/(double)i<<" milliseconds"<<endl;
         cout<<"Average Price: "<<AVG/(double)i<<endl<<endl;;
 
-        const size_t num_instrs = 1, max_iter = 210;
+        const size_t num_instrs = 1, max_iter = 20;
         Swaption swpts[num_instrs] = {*swaption};
         double weights[num_instrs] = {1.0};
 
@@ -156,7 +156,7 @@ int main(){
             cout<<"Setting swaption with allocated weight: "<<weights[i]<<endl;
             swpts[i].setParameters(swpt_keys, swpt_values, num_params);
             swpts[i].setTerms(terms, NN);
-            swpts[i].setMarketValue(8.07 + .01*(double)i);
+            swpts[i].setMarketValue(8.00 + .01*(double)i);
         }
         Optimization * opt = new Optimization();
         opt->calibrate(g2pp, swpts, weights, num_instrs, max_iter);
