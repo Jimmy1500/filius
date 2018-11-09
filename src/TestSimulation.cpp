@@ -130,9 +130,6 @@ int main(){
         swaption->setMarketValue(8.01);
 
         cout<<"Instrument Type: "<<(swaption->getInstrumentType()==RIT_SWAPTION ? "Swaption" : "Unknown")<<endl;
-        cout<<"Instrument Model Value: "<<swaption->getModelValue()<<endl;
-        cout<<"Instrument Market Value: "<<swaption->getMarketValue()<<endl;
-        cout<<"Instrument Loss(order=2): "<<swaption->getLoss(2)<<endl;
         cout<<"Pricing "<<swaption->getInstrumentDescription()<<endl;
 
         //g2pp->setPeriphery(G2::PERI::NTHREADS, 1);
@@ -148,15 +145,16 @@ int main(){
         cout<<"Average Cost: "<<Time/(double)i<<" milliseconds"<<endl;
         cout<<"Average Price: "<<AVG/(double)i<<endl<<endl;;
 
-        const size_t num_instrs = 1, max_iter = 20;
-        Swaption swpts[num_instrs] = {*swaption};
+        const size_t num_instrs = 1, max_iter = 5;
+        Swaption swpt = *swaption;
+        Swaption swpts[num_instrs] = {swpt};
         double weights[num_instrs] = {1.0};
 
         for (i = 0; i < num_instrs; ++i){
             cout<<"Setting swaption with allocated weight: "<<weights[i]<<endl;
             swpts[i].setParameters(swpt_keys, swpt_values, num_params);
             swpts[i].setTerms(terms, NN);
-            swpts[i].setMarketValue(8.00 + .01*(double)i);
+            swpts[i].setMarketValue(8.01 + .01*(double)i);
         }
         Optimization * opt = new Optimization();
         opt->calibrate(g2pp, swpts, weights, num_instrs, max_iter);
