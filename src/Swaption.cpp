@@ -29,6 +29,23 @@ Swaption::Swaption(RateModel* model)
     Flags[SWPT::STL] = SWPT::GET_ZCBP;
 }
 
+Swaption::Swaption(Swaption & swaption)
+    : RateInstrument(RateInstrumentType::RIT_SWAPTION, "Swaption with "),
+    Model(swaption.getModel()),
+    Params(new size_t[SWPT::NUM_PARAMS]()),
+    Flags (new size_t[SWPT::NUM_PARAMS]),
+    Dirty(0),
+    Prices(nullptr),
+    Payoff(swaption.Payoff)
+{
+    if (Model){ Description.append( Model->getModelDescription()); }
+    size_t i;
+    for ( i = 0; i < SWPT::NUM_PARAMS; ++i ){
+        Params[i] = swaption.Params[i];
+        Flags[i] = swaption.Flags[i];
+    }
+}
+
 Swaption::~Swaption(){
     delete [] Flags;
     delete [] Params;
