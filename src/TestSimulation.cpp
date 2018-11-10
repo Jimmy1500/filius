@@ -145,7 +145,7 @@ int main(){
         cout<<"Average Cost: "<<Time/(double)i<<" milliseconds"<<endl;
         cout<<"Average Price: "<<AVG/(double)i<<endl<<endl;;
 
-        const size_t num_instrs = 1, max_iter = 5;
+        const size_t num_instrs = 1, max_iter = 20;
         Swaption swpts[num_instrs] = {*swaption};
         double weights[num_instrs] = {1.0};
 
@@ -153,12 +153,15 @@ int main(){
             cout<<"Setting swaption with allocated weight: "<<weights[i]<<endl;
             swpts[i].setParameters(swpt_keys, swpt_values, num_params);
             swpts[i].setTerms(terms, NN);
-            swpts[i].setMarketValue(8.01 + .01*(double)i);
+            swpts[i].setMarketValue(8.67 + .01*(double)i);
         }
         Optimization * opt = new Optimization();
         opt->calibrate(g2pp, swpts, weights, num_instrs, max_iter);
         delete opt;
 
+        double swaption_model_value = swaption->getModelValue();
+        cout<<"### Accepted instrument model value: "<<endl;
+        cout<<"### Swaption(NTL:"<<notional<<",STK:"<<strike<<",STL:"<<t<<",MAT:"<<terms[NN-1]<<",FRQ:"<<terms[1]-terms[0]<<",NTERMS:"<<NN<<"): "<<swaption_model_value<<endl;
     }catch(int code){
         cout<<
         model->ModelError.Message<<"@"<<model->ModelError.Function<<":"<<model->ModelError.File<<":"<<model->ModelError.Line
