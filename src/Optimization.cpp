@@ -114,8 +114,8 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                 }while ( !isZero(gradient, num_params, precision) && iter < max_iter && factor > precision );
 #ifdef __DEBUG__
                     cout<<"### Accepted state ###"<<endl;
-                    cout<<"Accepted temperature: "<<curr_temp<<endl;
-                    cout<<"Accepted parametric configuration: ";
+                    cout<<"### Accepted temperature: "<<curr_temp<<endl;
+                    cout<<"### Accepted parametric configuration: ";
                     for ( i = 0; i < num_params-1; ++i ){
                         cout<<curr_guess[i]<<",";
                     }
