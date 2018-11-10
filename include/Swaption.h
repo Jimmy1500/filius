@@ -66,7 +66,6 @@ class Swaption : public RateInstrument{
 
         mat2d  *Prices;       //Intermediate Simulated bond price
         double  Payoff;       //Intermediate Payoff
-        friend class RateInstrument;
 
     public:
         Swaption();
