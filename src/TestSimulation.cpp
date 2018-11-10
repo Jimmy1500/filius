@@ -146,8 +146,7 @@ int main(){
         cout<<"Average Price: "<<AVG/(double)i<<endl<<endl;;
 
         const size_t num_instrs = 1, max_iter = 5;
-        Swaption swpt = *swaption;
-        Swaption swpts[num_instrs] = {swpt};
+        Swaption swpts[num_instrs] = {*swaption};
         double weights[num_instrs] = {1.0};
 
         for (i = 0; i < num_instrs; ++i){
