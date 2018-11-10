@@ -20,7 +20,7 @@ CXX_FLG  := --warn-unused-variable -unknown-pragmas -Wall -Werror
 CXX_THR  := -pthread
 CXX_OPT  := -Ofast
 CXX_INC  := -I$(INC)
-CXX_MAC  := -D__DEBUG__#-D__REGEN__
+CXX_MAC  := -D__DEBUG__ -D__REGEN__
 
 CFLAGS   := $(DEBUG) -gnu99 -Wall -Werror -pthread I$(INC)
 CXXFLAGS += $(DEBUG)
