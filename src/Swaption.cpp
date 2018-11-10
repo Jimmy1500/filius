@@ -72,7 +72,9 @@ double Swaption::getModelValue(){
 #ifdef __REGEN__
                     markDirtyAll();
 #else
-                    if ( g2pp->isDirty(G2::GENERATION) || g2pp->isDirty(G2::EVOLUTION) ) { markDirtyFrom(SWPT::GET_ZCBP); }
+                    if ( g2pp->isDirty(G2::GENERATION) || g2pp->isDirty(G2::EVOLUTION) ) {
+                        markDirtyFrom(SWPT::GET_ZCBP);
+                    }
 #endif
 
                     if (Prices){
