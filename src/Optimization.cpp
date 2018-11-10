@@ -46,7 +46,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                 g2pp->getParameters(keys, curr_guess, num_params);
                 Generator = new Rand<double>((num_params+1),1,0,1);
 
-                size_t i, iter = 0;
+                size_t i, iter = 0, local_optimum_reached = 0;
                 do{
                     if ( curr_temp <= precision ) {
                         break; //accept current state
@@ -110,8 +110,15 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                         }
                     }
                     cout<<endl;
+
+                    if ( isZero(gradient, num_params, precision) ){
+                        local_optimum_reached++;
+                    } else {
+                        local_optimum_reached = 0;
+                    }
+
                     ++iter;
-                }while ( iter < max_iter && factor > precision );
+                }while ( local_optimum_reached < 5 && iter < max_iter && factor > precision );
 #ifdef __DEBUG__
                     cout<<"### Accepted state ###"<<endl;
                     cout<<"### Accepted temperature: "<<curr_temp<<endl;
