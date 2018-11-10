@@ -55,11 +55,11 @@ class RateInstrument{
         virtual double getModelValue() = 0;
 
         virtual double getLoss(size_t order = 1){
-            double mkt_diff = getModelValue() - MarketValue;
-            double loss = mkt_diff;
+            double diff = getModelValue() - MarketValue;
+            double loss = 1.0;
             size_t i;
-            for ( i = 1; i < order; ++i){
-                loss *= mkt_diff;
+            for ( i = 0; i < order; ++i){
+                loss *= diff;
             }
             return loss;
         }
