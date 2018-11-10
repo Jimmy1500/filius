@@ -69,12 +69,6 @@ class RateModel{
         //Output: prices = [P(t,T[0]) ,..., P(t, T[nterms-1])]
         virtual void getZCBP(double *, double, double *, size_t){ }
 
-        //Enforce recalculation (if applicable)
-        virtual void markDirtyAll(){ }
-
-        //Check if there is anything at all that needs recalculation
-        virtual size_t isDirty(){ return 1; }
-
 };
 
 #endif
