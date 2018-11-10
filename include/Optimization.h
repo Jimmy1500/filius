@@ -35,10 +35,12 @@ class Optimization{
         Optimization();
         ~Optimization();
         
-        void calibrate (RateModel *, RateInstrument *, double *, size_t, size_t, double precision=1.e-6, double k=0.01, double alpha=0.01, size_t num_trials=3);
+        void calibrate (RateModel *, RateInstrument *, double *, size_t, size_t, double precision=1.e-12, double k=0.01, double alpha=0.01, size_t num_trials=3);
         void getGradient (double *, size_t *, size_t, RateModel *, RateInstrument *, double *, size_t);
+        void applyBoundaries(size_t *, double *, size_t);
+        bool isZero(double *, size_t, double);
+
         double loss_function (RateInstrument *, double *, size_t,  size_t order = 2);
         double avg_loss (RateModel *, RateInstrument *, double *, size_t,  size_t , size_t order = 2);
-        void applyBoundaries(size_t *, double *, size_t);
 };
 #endif
