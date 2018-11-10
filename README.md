@@ -28,7 +28,7 @@
     * Statistical Model Selection Module
 
 * Theoretical references  
-    [G2++](doc/G2++.pdf)
+    [G2++](doc/G2++.pdf)  
     [Deep Learning](http://www.deeplearningbook.org/)  
 
 * Idea and designs by author  
