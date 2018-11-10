@@ -53,12 +53,12 @@ Swaption::~Swaption(){
 }
 
 double Swaption::getModelValue(){
-    if (!Model){ return MarketValue; }
-#ifdef __REGEN__
-    markDirtyAll();
-#else
-    if ( Model->isDirty() ) { markDirtyFrom(SWPT::GET_ZCBP); }
+    if (!Model){
+#ifdef __DEBUG__
+        DEBUG("Instrument without interest model detected, defaulting to presumed market value")
 #endif
+        return MarketValue;
+    }
     switch (Model->getModelType()){
         case RMT_G2PP:
             {
@@ -69,6 +69,11 @@ double Swaption::getModelValue(){
                     double  settle   = Params[SWPT::STL];
                     double *terms    = Terms;
                     size_t  nterms   = NumTerms;
+#ifdef __REGEN__
+                    markDirtyAll();
+#else
+                    if ( g2pp->isDirty() > G2::SIMULATION + G2::CALCULATION ) { markDirtyFrom(SWPT::GET_ZCBP); }
+#endif
 
                     if (Prices){
                         if (Prices->resize(nterms, npaths)){ markDirtyAll(); }
