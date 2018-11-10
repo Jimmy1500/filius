@@ -37,29 +37,28 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                 size_t keys[num_params] = {G2::A, G2::B, G2::SIGMA_1, G2::SIGMA_2, G2::RHO};
                 double curr_guess[num_params] = {0., 0., 0., 0., 0.};
                 double next_guess[num_params] = {0., 0., 0., 0., 0.};
+                double best_guess[num_params] = {0., 0., 0., 0., 0.};
                 double gradient[num_params]   = {0., 0., 0., 0., 0.};
 
                 double factor = precision+0.1;
-                double initial_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
-                double curr_temp = initial_temp, next_temp = initial_temp, prob = 0.;
+                double curr_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
+                double next_temp = curr_temp, best_temp = curr_temp, prob = 0.;
 
                 g2pp->getParameters(keys, curr_guess, num_params);
                 Generator = new Rand<double>((num_params+1),1,0,1);
 
                 size_t i, iter = 0, local_optimum_reached = 0;
                 do{
-                    if ( curr_temp <= precision ) {
-                        break; //accept current state
-                    }
+                    if ( curr_temp <= precision ) { break; }
 
                     getGradient(gradient, keys, num_params, model, instrs, weights, num_instrs);
-
                     for (i = 0; i < num_params; ++i){
                         // stochastic descent (simulated annealing w. local optimizer)
                         next_guess[i] = curr_guess[i] - alpha * gradient[i] + Generator->nrand(0, i);
                     }
                     applyBoundaries(keys, next_guess, num_params);
                     g2pp->setParameters(keys, next_guess, num_params);
+                    next_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
 #ifdef __DEBUG__
                     cout<<"### Iteration "<<(iter+1)<<" ###"<<endl;
                     cout<<"### Current gradient: ";
@@ -68,38 +67,43 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                     }
                     cout<<endl;
 
-                    cout<<"### Current temperature: "<<curr_temp<<endl;
                     cout<<"### Current configuration: ";
                     for ( i = 0; i < num_params; ++i ){
                         cout<<curr_guess[i]<<"; ";
                     }
                     cout<<endl;
+                    cout<<"### Current temperature: "<<curr_temp<<endl;
 
-                    next_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
-                    cout<<"### Next temperature: "<<next_temp<<endl;
                     cout<<"### Next configuration: ";
                     for ( i = 0; i < num_params; ++i ){
                         cout<<next_guess[i]<<"; ";
                     }
                     cout<<endl;
+                    cout<<"### Next temperature: "<<next_temp<<endl;
 #endif
                     if ( isnan(next_temp) ){
                         cout<<"Adjacent temp not valid, trying again..."<<endl;
                         continue;
                     } else if ( next_temp <= precision ) {
                         cout<<"Adjacent temp low enough, configuration is optimal!"<<endl;
-                        g2pp->getParameters(keys, curr_guess, num_params);
+                        g2pp->getParameters(keys, best_guess, num_params);
                         curr_temp = next_temp;
+                        best_temp = next_temp;
                         break; //accept current state
                     } else if ( next_temp < curr_temp ){
-                        cout<<"Adjacent temp is better, configuration accepted..."<<endl;
                         g2pp->getParameters(keys, curr_guess, num_params);
-                        factor = next_temp/initial_temp; //temperature improvement measure
                         curr_temp = next_temp;
+
+                        if ( next_temp < best_temp ){
+                            factor = 1 - next_temp/best_temp; //temperature improvement measure
+                            g2pp->getParameters(keys, best_guess, num_params);
+                            best_temp = next_temp;
+                        }
+                        cout<<"Adjacent temp is better, configuration accepted with improvment factor: "<<factor<<endl;
                     } else {
                         cout<<"Adjacent temp is worse, determining transition probability..."<<endl;
                         prob = exp( (curr_temp - next_temp) / (k * curr_temp) );
-                        cout<<"transition probability:  "<<prob<<", transition factor:  "<<factor<<", precision:  "<<precision<<endl;
+                        cout<<"transition probability:  "<<prob<<endl;
                         if ( Generator->urand(0, num_params) <= prob ){
                             g2pp->getParameters(keys, curr_guess, num_params);
                             curr_temp = next_temp;
@@ -109,24 +113,30 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                             cout<<"transition rejected..."<<endl;
                         }
                     }
-                    cout<<endl;
 
                     if ( isZero(gradient, num_params, precision) ){
-                        local_optimum_reached++;
+                        ++local_optimum_reached;
                     } else {
                         local_optimum_reached = 0;
                     }
 
+                    cout<<"local optimum reached: "<<local_optimum_reached<<endl;
+                    cout<<endl;
+
                     ++iter;
-                }while ( local_optimum_reached < 5 && iter < max_iter && factor > precision );
+                } while ( local_optimum_reached < 5 && iter < max_iter && factor > precision );
+
+                if ( curr_temp > best_temp ){
+                    g2pp->setParameters(keys, best_guess, num_params);
+                }
 #ifdef __DEBUG__
-                    cout<<"### Accepted state ###"<<endl;
-                    cout<<"### Accepted temperature: "<<curr_temp<<endl;
-                    cout<<"### Accepted parametric configuration: ";
-                    for ( i = 0; i < num_params-1; ++i ){
-                        cout<<curr_guess[i]<<",";
-                    }
-                    cout<<curr_guess[num_params-1]<<endl;
+                cout<<"### Accepted state ###"<<endl;
+                cout<<"### Accepted temperature: "<<best_temp<<endl;
+                cout<<"### Accepted configuration: ";
+                for ( i = 0; i < num_params-1; ++i ){
+                    cout<<best_guess[i]<<",";
+                }
+                cout<<best_guess[num_params-1]<<endl;
 #endif
             }
             break;
