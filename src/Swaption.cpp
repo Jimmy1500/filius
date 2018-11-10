@@ -55,7 +55,7 @@ Swaption::~Swaption(){
 double Swaption::getModelValue(){
     if (!Model){
 #ifdef __DEBUG__
-        DEBUG("Instrument without interest model detected, defaulting to presumed market value")
+        DEBUG("Swaption: no interest model detected, defaulting to presumed market value")
 #endif
         return MarketValue;
     }
