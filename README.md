@@ -28,7 +28,7 @@
     * Statistical Model Selection Module
 
 * Theoretical references  
-    [Gn++](http://www.dm.unibo.it/~pascucci/web/Ricerca/PDF/difra.pdf)  
+    [G2++](doc/G2++.pdf)
     [Deep Learning](http://www.deeplearningbook.org/)  
 
 * Idea and designs by author  
