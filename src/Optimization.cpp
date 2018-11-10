@@ -111,7 +111,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                     }
                     cout<<endl;
                     ++iter;
-                }while ( !isZero(gradient, num_params, precision) && iter < max_iter && factor > precision );
+                }while ( iter < max_iter && factor > precision );
 #ifdef __DEBUG__
                     cout<<"### Accepted state ###"<<endl;
                     cout<<"### Accepted temperature: "<<curr_temp<<endl;
