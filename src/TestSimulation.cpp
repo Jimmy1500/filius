@@ -27,7 +27,7 @@ int main(){
     
     try{
         size_t peris_keys[] = {G2::NTERMS, G2::NPATHS, G2::NDIMS, G2::NTHREADS};
-        size_t peris[] = {1,12777777,2,16};
+        size_t peris[] = {1,17777777,2,16};
         size_t coefs_keys[] = {G2::A, G2::B, G2::SIGMA_1, G2::SIGMA_2, G2::RHO, G2::PC_A, G2::PC_B};
         double coefs[] = {0.10, 0.10, 0.042, 0.045, -0.89, 0.8, 0.5};
         
@@ -145,7 +145,7 @@ int main(){
         cout<<"Average Cost: "<<Time/(double)i<<" milliseconds"<<endl;
         cout<<"Average Price: "<<AVG/(double)i<<endl<<endl;;
 
-        const size_t num_instrs = 1, max_iter = 20;
+        const size_t num_instrs = 1, max_iter = 49;
         Swaption swpts[num_instrs] = {*swaption};
         double weights[num_instrs] = {1.0};
 
@@ -159,9 +159,10 @@ int main(){
         opt->calibrate(g2pp, swpts, weights, num_instrs, max_iter);
         delete opt;
 
-        double swaption_model_value = swaption->getModelValue();
+        cout<<"### Target instrument model value: "<<endl;
+        cout<<"### Swaption(NTL:"<<notional<<",STK:"<<strike<<",STL:"<<t<<",MAT:"<<terms[NN-1]<<",FRQ:"<<terms[1]-terms[0]<<",NTERMS:"<<NN<<"): "<<swpts[0].getMarketValue()<<endl;
         cout<<"### Accepted instrument model value: "<<endl;
-        cout<<"### Swaption(NTL:"<<notional<<",STK:"<<strike<<",STL:"<<t<<",MAT:"<<terms[NN-1]<<",FRQ:"<<terms[1]-terms[0]<<",NTERMS:"<<NN<<"): "<<swaption_model_value<<endl;
+        cout<<"### Swaption(NTL:"<<notional<<",STK:"<<strike<<",STL:"<<t<<",MAT:"<<terms[NN-1]<<",FRQ:"<<terms[1]-terms[0]<<",NTERMS:"<<NN<<"): "<<swpts[0].getModelValue()<<endl;
     }catch(int code){
         cout<<
         model->ModelError.Message<<"@"<<model->ModelError.Function<<":"<<model->ModelError.File<<":"<<model->ModelError.Line
