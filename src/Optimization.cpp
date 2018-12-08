@@ -220,11 +220,9 @@ void Optimization::applyBoundaries(size_t * keys, double * values, size_t num_pa
 }
 
 bool Optimization::isZero(double * gradient, size_t num_params, double precision){
-    double sum = 0.;
     size_t i;
     for ( i = 0; i < num_params; ++i ){
-        sum += fabs(gradient[i]);
-        if ( sum > precision ){
+        if ( fabs(gradient[i]) > precision ){
             return false;
         }
     }
