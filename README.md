@@ -21,7 +21,7 @@
     * Can easily be extended to integrate support for additional interest rate models  
 
 * Currently supported data calibration method  
-    1. Simulate Annealing with Gradient Descent (Global Optimizer)  
+    1. Simulated Annealing with Gradient Descent (Global Optimizer)  
 
 * Future support/To do:  
     * Feed-Forward Convolutional Neural Network Pricing Support  
@@ -43,14 +43,18 @@
 * Dependencies  
     C++17
 * How to build project  
-    make (compile program)  
-    make build (compile program, for the first time)  
+    make (compiles program)  
+    make build (creates ojb directories per machine os and architecture, then compiles program, do this if you are compling project for the first time)  
     make clean (clean obj and lib directories for clean build)
 * How to run tests  
     make run
 * Supported additional test utilities  
     gdb  
     valgrind
+
+### Compiler options ###
+* \_\_DEBUG\_\_: Pass this macro flag to compiler will lead to more verbose debug information whenever it is available
+* \_\_REGEN\_\_: Pass this macro flag to compiler will force recalculation with refreshed random numbers in in-bulk getZCBP method
 
 ### Who do I talk to? ###
 
@@ -71,7 +75,3 @@ Project Filius is a free software project licensed under [GNU General Public Lic
 Filius  Copyright (C) 2016-2018  James Ding  
 It is provided as is WITHOUT ANY WARRANTY.
 You can redistribute it and/or modify it under the terms of the GNU General Public License 3 published by the Free Software Foundation.
-
-### Compiler options ###
-* \_\_DEBUG\_\_: Pass this macro flag to compiler will lead to more verbose debug information whenever it is available
-* \_\_REGEN\_\_: Pass this macro flag to compiler will force recalculation with refreshed random numbers in in-bulk getZCBP method
