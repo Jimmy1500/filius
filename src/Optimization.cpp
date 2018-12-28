@@ -104,11 +104,11 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                             best_temp = next_temp;
                         }
 #ifdef __DEBUG__
-                        DEBUG("### Adjacent temperature is cooler, configuration accepted with improvment factor: "<<factor)
+                        DEBUG("### Adjacent temperature is cooler (better), configuration accepted with improvment factor: "<<factor)
 #endif
                     } else {
 #ifdef __DEBUG__
-                        DEBUG("### Adjacent temperature is hotter, determining transition probability...")
+                        DEBUG("### Adjacent temperature is hotter (worse), determining transition probability...")
 #endif
                         prob = exp( (curr_temp - next_temp) / (k * curr_temp) );
                         cout<<"transition probability:  "<<prob<<endl;
