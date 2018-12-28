@@ -103,7 +103,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                             best_temp = next_temp;
 
                             if ( factor < precision ) {
-                                tiny_improvement++;
+                                ++tiny_improvement;
                             }
                         }
 #ifdef __DEBUG__
