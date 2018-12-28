@@ -145,7 +145,7 @@ int main(){
         cout<<"Average Cost: "<<Time/(double)i<<" milliseconds"<<endl;
         cout<<"Average Price: "<<AVG/(double)i<<endl<<endl;;
 
-        const size_t num_instrs = 1, max_iter = 49;
+        const size_t num_instrs = 1, max_iter = 77;
         Swaption swpts[num_instrs] = {*swaption};
         double weights[num_instrs] = {1.0};
 
