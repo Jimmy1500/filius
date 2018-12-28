@@ -47,7 +47,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                 g2pp->getParameters(keys, curr_guess, num_params);
                 Generator = new Rand<double>((num_params+1),1,0,1);
 
-                size_t i, iter = 0, local_optimum_reached = 0;
+                size_t i, iter = 0, optimum_reached = 0, tiny_improvement = 0;
                 do{
                     if ( curr_temp <= precision ) { break; }
 
@@ -91,8 +91,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                         DEBUG("### Adjacent temperature low enough, configuration is accepted as optimal solution!")
 #endif
                         g2pp->getParameters(keys, best_guess, num_params);
-                        curr_temp = next_temp;
-                        best_temp = next_temp;
+                        curr_temp = next_temp; best_temp = next_temp;
                         break; //accept current state
                     } else if ( next_temp < curr_temp ){
                         g2pp->getParameters(keys, curr_guess, num_params);
@@ -102,6 +101,10 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                             factor = 1 - next_temp/best_temp; //temperature improvement measure
                             g2pp->getParameters(keys, best_guess, num_params);
                             best_temp = next_temp;
+
+                            if ( factor < precision ) {
+                                tiny_improvement++;
+                            }
                         }
 #ifdef __DEBUG__
                         DEBUG("### Adjacent temperature is cooler (better), configuration accepted with improvment factor: "<<factor)
@@ -129,18 +132,18 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                     }
 
                     if ( isZero(gradient, num_params, precision) ){
-                        ++local_optimum_reached;
+                        ++optimum_reached;
                     } else {
-                        local_optimum_reached = 0;
+                        optimum_reached = 0;
                     }
 #ifdef __DEBUG__
-                    DEBUG("local optimum reached: "<<local_optimum_reached)
+                    DEBUG("local optimum reached: "<<optimum_reached)
                     cout<<endl;
 #endif
                     ++iter;
-                } while ( local_optimum_reached < 49 && iter < max_iter && factor > precision );
+                } while ( optimum_reached < 49 && tiny_improvement < 7 && iter < max_iter );
 
-                if ( curr_temp > best_temp ){
+                if ( best_temp < curr_temp ){
                     g2pp->setParameters(keys, best_guess, num_params);
                 }
 #ifdef __DEBUG__
