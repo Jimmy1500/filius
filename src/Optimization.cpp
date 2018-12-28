@@ -138,7 +138,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                     cout<<endl;
 #endif
                     ++iter;
-                } while ( local_optimum_reached < 120 && iter < max_iter && factor > precision );
+                } while ( local_optimum_reached < 49 && iter < max_iter && factor > precision );
 
                 if ( curr_temp > best_temp ){
                     g2pp->setParameters(keys, best_guess, num_params);
