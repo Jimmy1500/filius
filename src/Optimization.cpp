@@ -8,7 +8,6 @@ Optimization::~Optimization(){
     }
 }
 
-
 void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* weights, size_t num_instrs, size_t max_iter, double precision, double k, double alpha, size_t num_trials){
     if ( precision <= 0.0 ) {
         precision = 1.e-12;
