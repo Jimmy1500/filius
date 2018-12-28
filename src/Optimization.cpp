@@ -111,14 +111,20 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                         DEBUG("### Adjacent temperature is hotter (worse), determining transition probability...")
 #endif
                         prob = exp( (curr_temp - next_temp) / (k * curr_temp) );
-                        cout<<"transition probability:  "<<prob<<endl;
+#ifdef __DEBUG__
+                        DEBUG("transition probability:  "<<prob)
+#endif
                         if ( Generator->urand(0, num_params) <= prob ){
                             g2pp->getParameters(keys, curr_guess, num_params);
                             curr_temp = next_temp;
-                            cout<<"transition accepted..."<<endl;
+#ifdef __DEBUG__
+                            DEBUG("transition accepted...")
+#endif
                         } else{
                             g2pp->setParameters(keys, curr_guess, num_params);
-                            cout<<"transition rejected..."<<endl;
+#ifdef __DEBUG__
+                            DEBUG("transition rejected...")
+#endif
                         }
                     }
 
@@ -127,24 +133,24 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                     } else {
                         local_optimum_reached = 0;
                     }
-
-                    cout<<"local optimum reached: "<<local_optimum_reached<<endl;
+#ifdef __DEBUG__
+                    DEBUG("local optimum reached: "<<local_optimum_reached)
                     cout<<endl;
-
+#endif
                     ++iter;
-                } while ( local_optimum_reached < 5 && iter < max_iter && factor > precision );
+                } while ( local_optimum_reached < 120 && iter < max_iter && factor > precision );
 
                 if ( curr_temp > best_temp ){
                     g2pp->setParameters(keys, best_guess, num_params);
                 }
 #ifdef __DEBUG__
-                cout<<"### Accepted state ###"<<endl;
-                cout<<"### Accepted temperature: "<<best_temp<<endl;
-                cout<<"### Accepted configuration: ";
+                DEBUG("### Accepted state ###");
+                DEBUG("### Accepted temperature: "<<best_temp)
+                DEBUG("### Accepted configuration: ")
                 for ( i = 0; i < num_params-1; ++i ){
                     cout<<best_guess[i]<<",";
                 }
-                cout<<best_guess[num_params-1]<<endl;
+                DEBUG(best_guess[num_params-1])
 #endif
             }
             break;
