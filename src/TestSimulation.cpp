@@ -27,7 +27,7 @@ int main(){
     
     try{
         size_t peris_keys[] = {G2::NTERMS, G2::NPATHS, G2::NDIMS, G2::NTHREADS};
-        size_t peris[] = {1,17777777,2,16};
+        size_t peris[] = {1,777777,2,16};
         size_t coefs_keys[] = {G2::A, G2::B, G2::SIGMA_1, G2::SIGMA_2, G2::RHO, G2::PC_A, G2::PC_B};
         double coefs[] = {0.10, 0.10, 0.042, 0.045, -0.89, 0.8, 0.5};
         
@@ -145,7 +145,7 @@ int main(){
         cout<<"Average Cost: "<<Time/(double)i<<" milliseconds"<<endl;
         cout<<"Average Price: "<<AVG/(double)i<<endl<<endl;;
 
-        const size_t num_instrs = 1, max_iter = 77;
+        const size_t num_instrs = 1, max_iter = 177;
         Swaption swpts[num_instrs] = {*swaption};
         double weights[num_instrs] = {1.0};
 
