@@ -79,7 +79,8 @@ Volatilies:               [ sigma1    ,      sigma2 ]
 
 #ifdef __DEBUG__
 #include <iostream>
-#define DEBUG(MSG) mtx.lock(); cout<<"Warning: "<<MSG<<endl; mtx.unlock();
+#define WARN(MSG) mtx.lock(); cout<<"Warning: "<<MSG<<endl; mtx.unlock();
+#define DEBUG(MSG) mtx.lock(); cout<<MSG<<endl; mtx.unlock();
 #endif
 
 #ifndef REPORT_ERROR

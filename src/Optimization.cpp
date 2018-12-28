@@ -13,19 +13,19 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
     if ( precision <= 0.0 ) {
         precision = 1.e-12;
 #ifdef __DEBUG__
-        DEBUG("precision must be greater than 0")
+        WARN("precision must be greater than 0")
 #endif
     }
     if ( k <= 0.0 ) {
         k = 0.01;
 #ifdef __DEBUG__
-        DEBUG("k must be greater than 0")
+        WARN("k must be greater than 0")
 #endif
     }
     if ( alpha <= 0.0 ) {
         alpha = 0.01;
 #ifdef __DEBUG__
-        DEBUG("alpha must be greater than 0")
+        WARN("alpha must be greater than 0")
 #endif
     }
 
@@ -82,10 +82,14 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                     cout<<"### Next temperature: "<<next_temp<<endl;
 #endif
                     if ( isnan(next_temp) ){
-                        cout<<"Adjacent temp not valid, trying again..."<<endl;
+#ifdef __DEBUG__
+                        DEBUG("### Adjacent temperature not measurable, trying again...")
+#endif
                         continue;
                     } else if ( next_temp <= precision ) {
-                        cout<<"Adjacent temp low enough, configuration is optimal!"<<endl;
+#ifdef __DEBUG__
+                        DEBUG("### Adjacent temperature low enough, configuration is accepted as optimal solution!")
+#endif
                         g2pp->getParameters(keys, best_guess, num_params);
                         curr_temp = next_temp;
                         best_temp = next_temp;
@@ -99,9 +103,13 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                             g2pp->getParameters(keys, best_guess, num_params);
                             best_temp = next_temp;
                         }
-                        cout<<"Adjacent temp is better, configuration accepted with improvment factor: "<<factor<<endl;
+#ifdef __DEBUG__
+                        DEBUG("### Adjacent temperature is cooler, configuration accepted with improvment factor: "<<factor)
+#endif
                     } else {
-                        cout<<"Adjacent temp is worse, determining transition probability..."<<endl;
+#ifdef __DEBUG__
+                        DEBUG("### Adjacent temperature is hotter, determining transition probability...")
+#endif
                         prob = exp( (curr_temp - next_temp) / (k * curr_temp) );
                         cout<<"transition probability:  "<<prob<<endl;
                         if ( Generator->urand(0, num_params) <= prob ){

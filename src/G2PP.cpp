@@ -68,13 +68,13 @@ double G2PP::getZCBP(double t, double T){
     if (nthreads < 1){
         nthreads = thread::hardware_concurrency();
 #ifdef __DEBUG__
-        DEBUG("Simulation threads number illogical, default to cpu core population")
+        WARN("Simulation threads number illogical, default to cpu core population")
 #endif
     }
     if (nthreads > npaths){
         nthreads = npaths;
 #ifdef __DEBUG__
-        DEBUG("Simulation threads number unreasonable, default to simulation periphery(npaths)")
+        WARN("Simulation threads number unreasonable, default to simulation periphery(npaths)")
 #endif
     }
     
@@ -230,13 +230,13 @@ void G2PP::getZCBP(double * prices, double * t, double T, size_t nterms){
         if (nthreads < 1){
             nthreads = thread::hardware_concurrency();
 #ifdef __DEBUG__
-            DEBUG("Simulation threads number illogical, default to cpu core population")
+            WARN("Simulation threads number illogical, default to cpu core population")
 #endif
         }
         if (nthreads > npaths){
             nthreads = npaths;
 #ifdef __DEBUG__
-            DEBUG("Simulation threads number unreasonable, default to simulation periphery(npaths)")
+            WARN("Simulation threads number unreasonable, default to simulation periphery(npaths)")
 #endif
         }
 
@@ -359,13 +359,13 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
         if (nthreads < 1){
             nthreads = thread::hardware_concurrency();
 #ifdef __DEBUG__
-            DEBUG("Simulation threads number illogical, default to cpu core population")
+            WARN("Simulation threads number illogical, default to cpu core population")
 #endif
         }
         if (nthreads > npaths){
             nthreads = npaths;
 #ifdef __DEBUG__
-            DEBUG("Simulation threads number unreasonable, default to simulation periphery(npaths)")
+            WARN("Simulation threads number unreasonable, default to simulation periphery(npaths)")
 #endif
         }
 #ifdef __REGEN__
@@ -565,13 +565,13 @@ void G2PP::getZCBP(double ** prices, double t, double * T, size_t nterms, size_t
         if (nthreads < 1){
             nthreads = thread::hardware_concurrency();
 #ifdef __DEBUG__
-            DEBUG("Simulation threads number illogical, default to cpu core population")
+            WARN("Simulation threads number illogical, default to cpu core population")
 #endif
         }
         if (nthreads > npaths){
             nthreads = npaths;
 #ifdef __DEBUG__
-            DEBUG("Simulation threads number unreasonable, default to simulation periphery(npaths)")
+            WARN("Simulation threads number unreasonable, default to simulation periphery(npaths)")
 #endif
         }
 #ifdef __REGEN__
@@ -757,13 +757,13 @@ mat2d * G2PP::getFactors(double t){
         if (nthreads < 1){
             nthreads = thread::hardware_concurrency();
 #ifdef __DEBUG__
-            DEBUG("Simulation threads number illogical, default to cpu core population")
+            WARN("Simulation threads number illogical, default to cpu core population")
 #endif
         }
         if (nthreads > npaths){
             nthreads = npaths;
 #ifdef __DEBUG__
-            DEBUG("Simulation threads number unreasonable, default to simulation periphery(npaths)")
+            WARN("Simulation threads number unreasonable, default to simulation periphery(npaths)")
 #endif
         }
 
