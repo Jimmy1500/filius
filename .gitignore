@@ -15,10 +15,5 @@ tags
 
 # build directory
 Linux_x86_64/
-
 Unix_x86_64/
-
 Win_x86_64/
-
-# templates
-legacy/
