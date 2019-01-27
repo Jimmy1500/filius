@@ -29,7 +29,6 @@
 
 * Theoretical references  
     [G2++](doc/G2++.pdf)  
-    [Deep Learning](http://www.deeplearningbook.org/)  
 
 * Ideas and designs by author  
     [Model Design - Work in progress](doc/G2++_Math.pdf)  
