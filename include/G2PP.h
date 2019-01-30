@@ -218,25 +218,25 @@ class G2PP : public RateModel{
             return Coefs[key];
         }
 
-        inline void getParameters(size_t * keys, double * values, size_t len){
-            size_t i;
+        constexpr void getParameters(size_t * keys, double * values, size_t len){
+            size_t i{0};
             for (i=0; i<len; ++i){
                 values[i] = Coefs[keys[i]];
             }
         }
 
-        inline size_t getPeriphery(size_t key){
+        constexpr size_t getPeriphery(size_t key){
             return Peris[key];
         }
 
-        inline void getPeripheries(size_t * keys, size_t * values, size_t len){
-            size_t i;
+        constexpr void getPeripheries(size_t * keys, size_t * values, size_t len){
+            size_t i{0};
             for (i=0; i<len; ++i){
                 values[i] = Peris[keys[i]];
             }
         }
 
-        inline Simulation* getSimEngine(){
+        constexpr Simulation* getSimEngine(){
             return Sim;
         }
 
