@@ -174,8 +174,8 @@ class G2PP : public RateModel{
                                                                                 // [      ...             ...       ]
                                                                                 // [ X(t)(npaths-1), Y(t)(npaths-1) ]
 
-        double M(double, double, double);
-        double V(double);
+        constexpr double M(double, double, double);
+        constexpr double V(double);
 
         //----Getters & Setters-----
         inline void setParameter(size_t key, double value){

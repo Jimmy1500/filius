@@ -851,7 +851,7 @@ mat2d * G2PP::getFactors(double t){
     return Factors;
 }
 
-double G2PP::M(double x, double y, double T_t){
+constexpr double G2PP::M(double x, double y, double T_t){
     double a = Coefs[G2::A];
     double b = Coefs[G2::B];
     
@@ -861,7 +861,7 @@ double G2PP::M(double x, double y, double T_t){
     return (fact1 + fact2);
 }
 
-double G2PP::V(double T_t){
+constexpr double G2PP::V(double T_t){
     double a = Coefs[G2::A];
     double b = Coefs[G2::B];
     double vol1 = Coefs[G2::SIGMA_1];
@@ -873,15 +873,15 @@ double G2PP::V(double T_t){
     double fact12= 0;
 
     if ( a && b ){
-        fact12 = vol1*vol2*(T_t + (exp(-a*T_t)-1.)/a + (exp(-b*T_t)-1.)/b - (exp(-(a+b)*T_t)-1.)/(a+b))/a/b;
+        fact12 = (T_t + (exp(-a*T_t)-1.)/a + (exp(-b*T_t)-1.)/b - (exp(-(a+b)*T_t)-1.)/(a+b))/a/b;
     }else{
         if ( !a && !b ){
-            fact12 = vol1*vol2*T_t;
+            fact12 = T_t;
         }else if (a && !b){
-            fact12 = vol1*vol2*(T_t + (exp(-a*T_t)-1.)/a)/a;
+            fact12 = (T_t + (exp(-a*T_t)-1.)/a)/a;
         }else{
-            fact12 = vol1*vol2*(T_t + (exp(-b*T_t)-1.)/b)/b;
+            fact12 = (T_t + (exp(-b*T_t)-1.)/b)/b;
         }
     }
-    return (fact1 + fact2 + 2.*rho*fact12);
+    return (fact1 + fact2 + 2.*rho*vol1*vol2*fact12);
 }
