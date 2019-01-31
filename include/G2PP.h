@@ -93,37 +93,6 @@ Volatilies:               [ sigma1    ,      sigma2 ]
         throw Error.Code;
 #endif
 
-#ifndef M_XY
-#define M_XY(X,Y,T_t)                          \
-        (                                      \
-            X*(a?(1.-exp(-a*T_t))/a:T_t)       \
-                          +                    \
-            Y*(b?(1.-exp(-b*T_t))/b:T_t)       \
-        )
-#endif
-
-#ifndef V_XY
-#define V_XY(T_t)                                                                           \
-        (                                                                                   \
-            vol1*vol1*(a ? (T_t+2./a*exp(-a*T_t)-.5/a*exp(-2.*a*T_t)-1.5/a)/a/a : T_t)      \
-                                                +                                           \
-            vol2*vol2*(b ? (T_t+2./a*exp(-b*T_t)-.5/b*exp(-2.*b*T_t)-1.5/b)/b/b : T_t)      \
-                                                +                                           \
-            2.*rho*vol1*vol2*                                                               \
-            (                                                                               \
-                a && b ? (T_t+(exp(-a*T_t)-1.)/a+(exp(-b*T_t)-1.)/b                         \
-                                                -                                           \
-                                (exp(-(a+b)*T_t)-1.)/(a+b))/a/b :                           \
-                (                                                                           \
-                    !a && !b ? T_t :                                                        \
-                    (                                                                       \
-                        a && !b ? (T_t+(exp(-a*T_t)-1.)/a)/a : (T_t+(exp(-b*T_t)-1.)/b)/b   \
-                    )                                                                       \
-                )                                                                           \
-            )                                                                               \
-        )
-#endif
-
 #ifndef SIM_ZCB
 #define SIM_ZCB(YieldCurve,X,Y,t,T,T_t)                                                     \
         (                                                                                   \
@@ -174,8 +143,8 @@ class G2PP : public RateModel{
                                                                                 // [      ...             ...       ]
                                                                                 // [ X(t)(npaths-1), Y(t)(npaths-1) ]
 
-        constexpr double M(double, double, double);
-        constexpr double V(double);
+        constexpr double M(double, double, double) const;
+        constexpr double V(double) const;
 
         //----Getters & Setters-----
         inline void setParameter(size_t key, double value){

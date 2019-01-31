@@ -120,7 +120,7 @@ double G2PP::getZCBP(double t, double T){
                         else{      X[path] = vol1*sqrt(.5*(1.-exp(-2.*a*t))/a)*Z_X[path][0]; }
                         if (b==0){ Y[path] = vol2*sqrt(t)*(rho*Z_X[path][0]-chol_y*Z_Y[path][0]); }
                         else{      Y[path] = vol2*sqrt(.5*(1.-exp(-2.*b*t))/b)*(rho*Z_X[path][0]-chol_y*Z_Y[path][0]); }
-                        Results->value[0] += .5*( exp(-M_XY( X[path], Y[path], T_t)) + exp(-M_XY(-X[path],-Y[path], T_t)) );
+                        Results->value[0] += .5*( exp(-M( X[path], Y[path], T_t)) + exp(-M(-X[path],-Y[path], T_t)) );
                     }
                     break;
                 }
@@ -139,7 +139,7 @@ double G2PP::getZCBP(double t, double T){
                                 else{      X[path] = vol1*sqrt(.5*(1.-exp(-2.*a*t))/a)*Z_X[path][0]; }
                                 if (b==0){ Y[path] = vol2*sqrt(t)*(rho*Z_X[path][0]-chol_y*Z_Y[path][0]); }
                                 else{      Y[path] = vol2*sqrt(.5*(1.-exp(-2.*b*t))/b)*(rho*Z_X[path][0]-chol_y*Z_Y[path][0]); }
-                                Results->value[i] += .5*( exp(-M_XY( X[path], Y[path], T_t)) + exp(-M_XY(-X[path],-Y[path], T_t)) );
+                                Results->value[i] += .5*( exp(-M( X[path], Y[path], T_t)) + exp(-M(-X[path],-Y[path], T_t)) );
                             }
                         });
                     }
@@ -152,7 +152,7 @@ double G2PP::getZCBP(double t, double T){
                             else{      X[path] = vol1*sqrt(.5*(1.-exp(-2.*a*t))/a)*Z_X[path][0]; }
                             if (b==0){ Y[path] = vol2*sqrt(t)*(rho*Z_X[path][0]-chol_y*Z_Y[path][0]); }
                             else{      Y[path] = vol2*sqrt(.5*(1.-exp(-2.*b*t))/b)*(rho*Z_X[path][0]-chol_y*Z_Y[path][0]); }
-                            Results->value[last_thread] += .5*( exp(-M_XY( X[path], Y[path], T_t)) + exp(-M_XY(-X[path],-Y[path], T_t)) );
+                            Results->value[last_thread] += .5*( exp(-M( X[path], Y[path], T_t)) + exp(-M(-X[path],-Y[path], T_t)) );
                         }
                     });
 
@@ -182,7 +182,7 @@ double G2PP::getZCBP(double t, double T){
                 size_t end   = (i+1)*paths_per_thread;
                 size_t path;
                 for (path = begin; path < end; ++path){
-                    Results->value[i] += .5*( exp(-M_XY( X[path], Y[path], T_t)) + exp(-M_XY(-X[path],-Y[path], T_t)) );
+                    Results->value[i] += .5*( exp(-M( X[path], Y[path], T_t)) + exp(-M(-X[path],-Y[path], T_t)) );
                 }
             });
         }
@@ -191,7 +191,7 @@ double G2PP::getZCBP(double t, double T){
             size_t begin = last_thread*paths_per_thread;
             size_t path;
             for (path = begin; path < npaths; ++path){
-                Results->value[last_thread] += .5*( exp(-M_XY( X[path], Y[path], T_t)) + exp(-M_XY(-X[path],-Y[path], T_t)) );
+                Results->value[last_thread] += .5*( exp(-M( X[path], Y[path], T_t)) + exp(-M(-X[path],-Y[path], T_t)) );
             }
         });
 
@@ -211,7 +211,7 @@ double G2PP::getZCBP(double t, double T){
             ZCB += Results->value[i];
         }
 
-        ZCB *= YieldCurve->P(t,T) * exp( .5*(V_XY(T_t)-V_XY(T)+V_XY(t)) ) / (double)npaths;
+        ZCB *= YieldCurve->P(t,T) * exp( .5*(V(T_t)-V(T)+V(t)) ) / (double)npaths;
         clearDirty(G2::CALCULATION);
     }
 
@@ -278,9 +278,9 @@ void G2PP::getZCBP(double * prices, double * t, double T, size_t nterms){
                             else{        X = vol1*sqrt(.5*(1.-exp(-2.*a*t_))/a)*Z_X; }
                             if (b==0.0){ Y = vol2*sqrt(t_)*(rho*Z_X-chol_y*Z_Y); }
                             else{        Y = vol2*sqrt(.5*(1.-exp(-2.*b*t_))/b)*(rho*Z_X-chol_y*Z_Y); }
-                            prices[term] += .5*( exp(-M_XY( X, Y, T_t)) + exp(-M_XY(-X,-Y, T_t)) );
+                            prices[term] += .5*( exp(-M( X, Y, T_t)) + exp(-M(-X,-Y, T_t)) );
                         }
-                        prices[term] *= YieldCurve->P(t_,T) * exp( .5*(V_XY(T_t)-V_XY(T)+V_XY(t_)) ) / (double)npaths;
+                        prices[term] *= YieldCurve->P(t_,T) * exp( .5*(V(T_t)-V(T)+V(t_)) ) / (double)npaths;
                     }
                     break;
                 }
@@ -293,7 +293,7 @@ void G2PP::getZCBP(double * prices, double * t, double T, size_t nterms){
                             double t_,T_t,Z_X,Z_Y,X,Y,coef,mean;
                             size_t term, path, begin, end;
                             for (term = 0; term < nterms; ++term){
-                                t_ = t[term]; T_t = T-t_; coef = YieldCurve->P(t_,T) * exp( .5*(V_XY(T_t)-V_XY(T)+V_XY(t_)) ) / (double)npaths; mean = 0.0;
+                                t_ = t[term]; T_t = T-t_; coef = YieldCurve->P(t_,T) * exp( .5*(V(T_t)-V(T)+V(t_)) ) / (double)npaths; mean = 0.0;
                                 begin = i*paths_per_thread, end = (i+1)*paths_per_thread;
                                 for (path = begin; path < end; ++path){
 #ifdef __REGEN__
@@ -305,7 +305,7 @@ void G2PP::getZCBP(double * prices, double * t, double T, size_t nterms){
                                     else{      X = vol1*sqrt(.5*(1.-exp(-2.*a*t_))/a)*Z_X; }
                                     if (b==0){ Y = vol2*sqrt(t_)*(rho*Z_X-chol_y*Z_Y); }
                                     else{      Y = vol2*sqrt(.5*(1.-exp(-2.*b*t_))/b)*(rho*Z_X-chol_y*Z_Y); }
-                                    mean += coef*.5*( exp(-M_XY( X, Y, T_t)) + exp(-M_XY(-X,-Y, T_t)) );
+                                    mean += coef*.5*( exp(-M( X, Y, T_t)) + exp(-M(-X,-Y, T_t)) );
                                 }
                                 mtx.lock(); prices[term] += mean; mtx.unlock();
                             }
@@ -316,7 +316,7 @@ void G2PP::getZCBP(double * prices, double * t, double T, size_t nterms){
                         double t_,T_t,Z_X,Z_Y,X,Y,coef,mean;
                         size_t term, path, begin;
                         for (term = 0; term < nterms; ++term){
-                            t_ = t[term]; T_t = T-t_; coef = YieldCurve->P(t_,T) * exp( .5*(V_XY(T_t)-V_XY(T)+V_XY(t_)) ) / (double)npaths; mean = 0.0;
+                            t_ = t[term]; T_t = T-t_; coef = YieldCurve->P(t_,T) * exp( .5*(V(T_t)-V(T)+V(t_)) ) / (double)npaths; mean = 0.0;
                             begin = last_thread*paths_per_thread;
                             for (path = begin; path < npaths; ++path){
 #ifdef __REGEN__
@@ -328,7 +328,7 @@ void G2PP::getZCBP(double * prices, double * t, double T, size_t nterms){
                                 else{      X = vol1*sqrt(.5*(1.-exp(-2.*a*t_))/a)*Z_X; }
                                 if (b==0){ Y = vol2*sqrt(t_)*(rho*Z_X-chol_y*Z_Y); }
                                 else{      Y = vol2*sqrt(.5*(1.-exp(-2.*b*t_))/b)*(rho*Z_X-chol_y*Z_Y); }
-                                mean += coef*.5*( exp(-M_XY( X, Y, T_t)) + exp(-M_XY(-X,-Y, T_t)) );
+                                mean += coef*.5*( exp(-M( X, Y, T_t)) + exp(-M(-X,-Y, T_t)) );
                             }
                             mtx.lock(); prices[term] += mean; mtx.unlock();
                         }
@@ -405,7 +405,7 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                         double T_,T_t,Z_X,Z_Y,coef;
                         size_t term, path;
                         for (term = 0; term < nterms; ++term){
-                            T_= T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V_XY(T_t)-V_XY(T_)+V_XY(t)) ) / (double)npaths;
+                            T_= T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V(T_t)-V(T_)+V(t)) ) / (double)npaths;
                             for (path = 0; path < npaths; ++path){
 #ifdef __REGEN__
                                 Z_X = Samples->value[G2::X][path][term]; Z_Y = Samples->value[G2::Y][path][term];
@@ -416,7 +416,7 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                                 else{        X[path] = vol1*sqrt(.5*(1.-exp(-2.*a*t))/a)*Z_X; }
                                 if (b==0.0){ Y[path] = vol2*sqrt(t)*(rho*Z_X-chol_y*Z_Y); }
                                 else{        Y[path] = vol2*sqrt(.5*(1.-exp(-2.*b*t))/b)*(rho*Z_X-chol_y*Z_Y); }
-                                prices[term] += coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
+                                prices[term] += coef*.5*( exp(-M(X[path], Y[path],T_t)) + exp(-M(-X[path],-Y[path],T_t)) );
                             }
                         }
                         break;
@@ -430,7 +430,7 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                                 double T_,T_t,Z_X,Z_Y,coef,mean;
                                 size_t term, path, begin = i*paths_per_thread, end = (i+1)*paths_per_thread;
                                 for (term = 0; term < nterms; ++term){
-                                    T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V_XY(T_t)-V_XY(T_)+V_XY(t)) ) / (double)npaths; mean = 0;
+                                    T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V(T_t)-V(T_)+V(t)) ) / (double)npaths; mean = 0;
                                     for (path = begin; path < end; ++path){
 #ifdef __REGEN__
                                         Z_X = Samples->value[G2::X][path][term]; Z_Y = Samples->value[G2::Y][path][term];
@@ -441,7 +441,7 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                                         else{      X[path] = vol1*sqrt(.5*(1.-exp(-2.*a*t))/a)*Z_X; }
                                         if (b==0){ Y[path] = vol2*sqrt(t)*(rho*Z_X-chol_y*Z_Y); }
                                         else{      Y[path] = vol2*sqrt(.5*(1.-exp(-2.*b*t))/b)*(rho*Z_X-chol_y*Z_Y); }
-                                        mean += coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
+                                        mean += coef*.5*( exp(-M(X[path], Y[path],T_t)) + exp(-M(-X[path],-Y[path],T_t)) );
                                     }
                                     mtx.lock(); prices[term] += mean; mtx.unlock();
                                 }
@@ -452,7 +452,7 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                             double T_,T_t,Z_X,Z_Y,coef,mean;
                             size_t term, path, begin = last_thread*paths_per_thread;
                             for (term = 0; term < nterms; ++term){
-                                T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V_XY(T_t)-V_XY(T_)+V_XY(t)) ) / (double)npaths; mean = 0;
+                                T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V(T_t)-V(T_)+V(t)) ) / (double)npaths; mean = 0;
                                 for (path = begin; path < npaths; ++path){
 #ifdef __REGEN__
                                     Z_X = Samples->value[G2::X][path][term]; Z_Y = Samples->value[G2::Y][path][term];
@@ -463,7 +463,7 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                                     else{      X[path] = vol1*sqrt(.5*(1.-exp(-2.*a*t))/a)*Z_X; }
                                     if (b==0){ Y[path] = vol2*sqrt(t)*(rho*Z_X-chol_y*Z_Y); }
                                     else{      Y[path] = vol2*sqrt(.5*(1.-exp(-2.*b*t))/b)*(rho*Z_X-chol_y*Z_Y); }
-                                    mean += coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
+                                    mean += coef*.5*( exp(-M(X[path], Y[path],T_t)) + exp(-M(-X[path],-Y[path],T_t)) );
                                 }
                                 mtx.lock(); prices[term] += mean; mtx.unlock();
                             }
@@ -495,9 +495,9 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                         double T_,T_t,coef;
                         size_t term, path;
                         for (term = 0; term < nterms; ++term){
-                            T_= T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V_XY(T_t)-V_XY(T_)+V_XY(t)) ) / (double)npaths;
+                            T_= T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V(T_t)-V(T_)+V(t)) ) / (double)npaths;
                             for (path = 0; path < npaths; ++path){
-                                prices[term] += coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
+                                prices[term] += coef*.5*( exp(-M(X[path], Y[path],T_t)) + exp(-M(-X[path],-Y[path],T_t)) );
                             }
                         }
                         break;
@@ -511,9 +511,9 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                                 double T_,T_t,coef,mean;
                                 size_t term, path, begin = i*paths_per_thread, end = (i+1)*paths_per_thread;
                                 for (term = 0; term < nterms; ++term){
-                                    T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V_XY(T_t)-V_XY(T_)+V_XY(t)) ) / (double)npaths; mean = 0;
+                                    T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V(T_t)-V(T_)+V(t)) ) / (double)npaths; mean = 0;
                                     for (path = begin; path < end; ++path){
-                                        mean += coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
+                                        mean += coef*.5*( exp(-M(X[path], Y[path],T_t)) + exp(-M(-X[path],-Y[path],T_t)) );
                                     }
                                     mtx.lock(); prices[term] += mean; mtx.unlock();
                                 }
@@ -524,9 +524,9 @@ void G2PP::getZCBP(double * prices, double t, double * T, size_t nterms){
                             double T_,T_t,coef,mean;
                             size_t term, path, begin = last_thread*paths_per_thread;
                             for (term = 0; term < nterms; ++term){
-                                T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V_XY(T_t)-V_XY(T_)+V_XY(t)) ) / (double)npaths; mean = 0;
+                                T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V(T_t)-V(T_)+V(t)) ) / (double)npaths; mean = 0;
                                 for (path = begin; path < npaths; ++path){
-                                    mean += coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
+                                    mean += coef*.5*( exp(-M(X[path], Y[path],T_t)) + exp(-M(-X[path],-Y[path],T_t)) );
                                 }
                                 mtx.lock(); prices[term] += mean; mtx.unlock();
                             }
@@ -611,7 +611,7 @@ void G2PP::getZCBP(double ** prices, double t, double * T, size_t nterms, size_t
                         double T_,T_t,Z_X,Z_Y,coef;
                         size_t term, path;
                         for (term = 0; term < nterms; ++term){
-                            T_= T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V_XY(T_t)-V_XY(T_)+V_XY(t)) );
+                            T_= T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V(T_t)-V(T_)+V(t)) );
                             for (path = 0; path < npaths; ++path){
 #ifdef __REGEN__
                                 Z_X = Samples->value[G2::X][path][term]; Z_Y = Samples->value[G2::Y][path][term];
@@ -622,7 +622,7 @@ void G2PP::getZCBP(double ** prices, double t, double * T, size_t nterms, size_t
                                 else{        X[path] = vol1*sqrt(.5*(1.-exp(-2.*a*t))/a)*Z_X; }
                                 if (b==0.0){ Y[path] = vol2*sqrt(t)*(rho*Z_X-chol_y*Z_Y); }
                                 else{        Y[path] = vol2*sqrt(.5*(1.-exp(-2.*b*t))/b)*(rho*Z_X-chol_y*Z_Y); }
-                                prices[path][term] = coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
+                                prices[path][term] = coef*.5*( exp(-M(X[path], Y[path],T_t)) + exp(-M(-X[path],-Y[path],T_t)) );
                             }
                         }
                         break;
@@ -636,7 +636,7 @@ void G2PP::getZCBP(double ** prices, double t, double * T, size_t nterms, size_t
                                 double T_,T_t,Z_X,Z_Y,coef;
                                 size_t term, path, begin = i*paths_per_thread, end = (i+1)*paths_per_thread;
                                 for (term = 0; term < nterms; ++term){
-                                    T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V_XY(T_t)-V_XY(T_)+V_XY(t)) );
+                                    T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V(T_t)-V(T_)+V(t)) );
                                     for (path = begin; path < end; ++path){
 #ifdef __REGEN__
                                         Z_X = Samples->value[G2::X][path][term]; Z_Y = Samples->value[G2::Y][path][term];
@@ -647,7 +647,7 @@ void G2PP::getZCBP(double ** prices, double t, double * T, size_t nterms, size_t
                                         else{      X[path] = vol1*sqrt(.5*(1.-exp(-2.*a*t))/a)*Z_X; }
                                         if (b==0){ Y[path] = vol2*sqrt(t)*(rho*Z_X-chol_y*Z_Y); }
                                         else{      Y[path] = vol2*sqrt(.5*(1.-exp(-2.*b*t))/b)*(rho*Z_X-chol_y*Z_Y); }
-                                        prices[path][term] = coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
+                                        prices[path][term] = coef*.5*( exp(-M(X[path], Y[path],T_t)) + exp(-M(-X[path],-Y[path],T_t)) );
                                     }
                                 }
                             });
@@ -657,7 +657,7 @@ void G2PP::getZCBP(double ** prices, double t, double * T, size_t nterms, size_t
                             double T_,T_t,Z_X,Z_Y,coef;
                             size_t term, path, begin = last_thread*paths_per_thread;
                             for (term = 0; term < nterms; ++term){
-                                T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V_XY(T_t)-V_XY(T_)+V_XY(t)) );
+                                T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V(T_t)-V(T_)+V(t)) );
                                 for (path = begin; path < npaths; ++path){
 #ifdef __REGEN__
                                     Z_X = Samples->value[G2::X][path][term]; Z_Y = Samples->value[G2::Y][path][term];
@@ -668,7 +668,7 @@ void G2PP::getZCBP(double ** prices, double t, double * T, size_t nterms, size_t
                                     else{      X[path] = vol1*sqrt(.5*(1.-exp(-2.*a*t))/a)*Z_X; }
                                     if (b==0){ Y[path] = vol2*sqrt(t)*(rho*Z_X-chol_y*Z_Y); }
                                     else{      Y[path] = vol2*sqrt(.5*(1.-exp(-2.*b*t))/b)*(rho*Z_X-chol_y*Z_Y); }
-                                    prices[path][term] = coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
+                                    prices[path][term] = coef*.5*( exp(-M(X[path], Y[path],T_t)) + exp(-M(-X[path],-Y[path],T_t)) );
                                 }
                             }
                         });
@@ -699,9 +699,9 @@ void G2PP::getZCBP(double ** prices, double t, double * T, size_t nterms, size_t
                         double T_,T_t,coef;
                         size_t term, path;
                         for (term = 0; term < nterms; ++term){
-                            T_= T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V_XY(T_t)-V_XY(T_)+V_XY(t)) );
+                            T_= T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V(T_t)-V(T_)+V(t)) );
                             for (path = 0; path < npaths; ++path){
-                                prices[path][term] = coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
+                                prices[path][term] = coef*.5*( exp(-M(X[path], Y[path],T_t)) + exp(-M(-X[path],-Y[path],T_t)) );
                             }
                         }
                         break;
@@ -715,9 +715,9 @@ void G2PP::getZCBP(double ** prices, double t, double * T, size_t nterms, size_t
                                 double T_,T_t,coef;
                                 size_t term, path, begin = i*paths_per_thread, end = (i+1)*paths_per_thread;
                                 for (term = 0; term < nterms; ++term){
-                                    T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V_XY(T_t)-V_XY(T_)+V_XY(t)) );
+                                    T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V(T_t)-V(T_)+V(t)) );
                                     for (path = begin; path < end; ++path){
-                                        prices[path][term] = coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
+                                        prices[path][term] = coef*.5*( exp(-M(X[path], Y[path],T_t)) + exp(-M(-X[path],-Y[path],T_t)) );
                                     }
                                 }
                             });
@@ -727,9 +727,9 @@ void G2PP::getZCBP(double ** prices, double t, double * T, size_t nterms, size_t
                             double T_,T_t,coef;
                             size_t term, path, begin = last_thread*paths_per_thread;
                             for (term = 0; term < nterms; ++term){
-                                T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V_XY(T_t)-V_XY(T_)+V_XY(t)) );
+                                T_ = T[term]; T_t = T_-t; coef = YieldCurve->P(t,T_) * exp( .5*(V(T_t)-V(T_)+V(t)) );
                                 for (path = begin; path < npaths; ++path){
-                                    prices[path][term] = coef*.5*( exp(-M_XY(X[path], Y[path],T_t)) + exp(-M_XY(-X[path],-Y[path],T_t)) );
+                                    prices[path][term] = coef*.5*( exp(-M(X[path], Y[path],T_t)) + exp(-M(-X[path],-Y[path],T_t)) );
                                 }
                             }
                         });
@@ -851,37 +851,38 @@ mat2d * G2PP::getFactors(double t){
     return Factors;
 }
 
-constexpr double G2PP::M(double x, double y, double T_t){
+constexpr double G2PP::M(double X, double Y, double T_t) const {
     double a = Coefs[G2::A];
     double b = Coefs[G2::B];
     
-    double fact1 = x * (a ? (1.-exp(-a*T_t))/a : T_t);
-    double fact2 = y * (b ? (1.-exp(-b*T_t))/b : T_t);
-
-    return (fact1 + fact2);
+    return (
+                X*(a?(1.-exp(-a*T_t))/a:T_t)
+                              +
+                Y*(b?(1.-exp(-b*T_t))/b:T_t)
+           );
 }
 
-constexpr double G2PP::V(double T_t){
+constexpr double G2PP::V(double T_t) const {
     double a = Coefs[G2::A];
     double b = Coefs[G2::B];
     double vol1 = Coefs[G2::SIGMA_1];
     double vol2 = Coefs[G2::SIGMA_2];
     double rho = Coefs[G2::RHO];
 
-    double fact1 = vol1*vol1*(a ? (T_t+2./a*exp(-a*T_t)-.5/a*exp(-2.*a*T_t)-1.5/a)/a/a : T_t);
-    double fact2 = vol2*vol2*(b ? (T_t+2./a*exp(-b*T_t)-.5/b*exp(-2.*b*T_t)-1.5/b)/b/b : T_t);
-    double fact12= 0;
-
-    if ( a && b ){
-        fact12 = (T_t + (exp(-a*T_t)-1.)/a + (exp(-b*T_t)-1.)/b - (exp(-(a+b)*T_t)-1.)/(a+b))/a/b;
-    }else{
-        if ( !a && !b ){
-            fact12 = T_t;
-        }else if (a && !b){
-            fact12 = (T_t + (exp(-a*T_t)-1.)/a)/a;
-        }else{
-            fact12 = (T_t + (exp(-b*T_t)-1.)/b)/b;
-        }
-    }
-    return (fact1 + fact2 + 2.*rho*vol1*vol2*fact12);
+    return (
+                vol1*vol1*(a ? (T_t+2./a*exp(-a*T_t)-.5/a*exp(-2.*a*T_t)-1.5/a)/a/a : T_t)
+                                                    +
+                vol2*vol2*(b ? (T_t+2./a*exp(-b*T_t)-.5/b*exp(-2.*b*T_t)-1.5/b)/b/b : T_t)
+                                                    +
+                2.*rho*vol1*vol2*
+                (
+                    a && b ? (T_t+(exp(-a*T_t)-1.)/a+(exp(-b*T_t)-1.)/b - (exp(-(a+b)*T_t)-1.)/(a+b))/a/b :
+                    (
+                        !a && !b ? T_t :
+                        (
+                            a && !b ? (T_t+(exp(-a*T_t)-1.)/a)/a : (T_t+(exp(-b*T_t)-1.)/b)/b
+                        )
+                    )
+                )
+           );
 }
