@@ -93,17 +93,6 @@ Volatilies:               [ sigma1    ,      sigma2 ]
         throw Error.Code;
 #endif
 
-#ifndef SIM_ZCB
-#define SIM_ZCB(YieldCurve,X,Y,t,T,T_t)                                                     \
-        (                                                                                   \
-                .5 * YieldCurve->P(t,T)                                                     \
-                            *                                                               \
-            exp( .5*( V(T_t) - V(T) + V(t)) )                                      \
-                            *                                                               \
-          ( exp(-M(X,Y,T_t)) + exp(-M(-X,-Y,T_t)) )                                   \
-        )
-#endif
-
 class G2PP : public RateModel{
     private:
         Simulation *Sim;        //Simulation Core, responsible for generating random numbers in bulk
