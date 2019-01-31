@@ -110,7 +110,7 @@ class Swaption : public RateInstrument{
         constexpr size_t  getNumTerms()            const    { return NumTerms; }
         constexpr double  getParameter(size_t key) const    { return Params[key]; }
 
-        //--------------------------------Utilities-----------------------------------------------
+        //--------------------------------Utility-----------------------------------------------
         constexpr double maxDiff(double float_leg, double fix_leg) const {
             return ( (float_leg > fix_leg) ? (float_leg - fix_leg) : (0.) );
         }
