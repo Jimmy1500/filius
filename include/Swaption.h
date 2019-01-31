@@ -111,8 +111,8 @@ class Swaption : public RateInstrument{
         constexpr double  getParameter(size_t key) const    { return Params[key]; }
 
         //--------------------------------Utility-----------------------------------------------
-        constexpr double maxDiff(double float_leg, double fix_leg) const {
-            return ( (float_leg > fix_leg) ? (float_leg - fix_leg) : (0.) );
+        constexpr double max(double float_fix) const {
+            return ( float_fix ? float_fix : 0. );
         }
 
         //-----------Procedural Step Components Recalculation Bitwise Marker/Verifier------------

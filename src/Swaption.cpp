@@ -102,7 +102,7 @@ double Swaption::getModelValue(){
                                         }
                                         fix_leg = strike * fix_factor;
                                         float_leg = Prices->value[path][0] - Prices->value[path][nterms-1];
-                                        Payoff += ( (float_leg > fix_leg) ? (float_leg - fix_leg) : (0.) );
+                                        Payoff += max(float_leg - fix_leg);
                                     }
                                     break;
                                 }// case 1
@@ -124,7 +124,7 @@ double Swaption::getModelValue(){
                                                 }
                                                 fix_leg = strike * fix_factor;
                                                 float_leg = Prices->value[path][0] - Prices->value[path][nterms-1];
-                                                pay_off += ( (float_leg > fix_leg) ? (float_leg - fix_leg) : (0.) );
+                                                pay_off += max(float_leg - fix_leg);
                                             }
                                             mtx.lock(); Payoff += pay_off; mtx.unlock();
                                         });
@@ -141,16 +141,14 @@ double Swaption::getModelValue(){
                                             }
                                             fix_leg = strike * fix_factor;
                                             float_leg = Prices->value[path][0] - Prices->value[path][nterms-1];
-                                            pay_off += ( (float_leg > fix_leg) ? (float_leg - fix_leg) : (0.) );
+                                            pay_off += max(float_leg - fix_leg);
                                         }
                                         mtx.lock(); Payoff += pay_off; mtx.unlock();
                                     });
 
                                     for (i = 0; i < nthreads; ++i){ threads[i].join(); }
 
-                                    thread garbage_collection = thread([threads]()->void{
-                                        delete [] threads;
-                                    });
+                                    thread garbage_collection = thread([threads]()->void{ delete [] threads; });
                                     garbage_collection.detach();
                                     break;
                                 }// default
