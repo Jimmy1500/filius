@@ -105,10 +105,15 @@ class Swaption : public RateInstrument{
         inline void setTerms(double * terms, size_t nterms) { Terms = terms; NumTerms = nterms; markDirtyAll(); }
 
         //--------------------------------Getters-----------------------------------------------
-        inline RateModel* getModel()            { return Model; }
-        inline double  getParameter(size_t key) { return Params[key]; }
-        inline double* getTerms()               { return Terms; }
-        inline size_t  getNumTerms()            { return NumTerms; }
+        constexpr RateModel* getModel()            const    { return Model; }
+        constexpr double* getTerms()               const    { return Terms; }
+        constexpr size_t  getNumTerms()            const    { return NumTerms; }
+        constexpr double  getParameter(size_t key) const    { return Params[key]; }
+
+        //--------------------------------Utilities-----------------------------------------------
+        constexpr double maxDiff(double float_leg, double fix_leg) const {
+            return ( (float_leg > fix_leg) ? (float_leg - fix_leg) : (0.) );
+        }
 
         //-----------Procedural Step Components Recalculation Bitwise Marker/Verifier------------
         inline void markDirtyFrom(size_t step){
