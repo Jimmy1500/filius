@@ -55,14 +55,14 @@ double Curve::P(double t, double T){
     }
 }
 
-double * Curve::getTerms(){
+constexpr double * Curve::getTerms() const {
     return Terms;
 }
 
-double * Curve::getValues(){
+constexpr double * Curve::getValues() const {
     return Values;
 }
 
-size_t Curve::getLength(){
+constexpr size_t Curve::getLength() const {
     return Length;
 }

@@ -48,13 +48,13 @@ class Curve{
         //Utilities:
         //ORDED BY Terms from least to most
         void interpolateTerms(double, size_t&, int&); //Outputs the nearest 2 indices for inter/extrapolation
-        double P(double);                                  //Log-Linear Interpolation
-        double P(double, double);                          //P(t,T) = P(0,T)/P(0,t)
+        double P(double);                             //Log-Linear Interpolation
+        double P(double, double);                     //P(t,T) = P(0,T)/P(0,t)
 
         //Getters/Setters
-        double * getTerms();
-        double * getValues();
-        size_t   getLength();
+        constexpr double * getTerms()  const;
+        constexpr double * getValues() const;
+        constexpr size_t   getLength() const;
 
 };
 
