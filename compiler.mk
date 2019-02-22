@@ -14,7 +14,7 @@ BIN=${EXPORT}/bin/
 C        := gcc
 CXX      := g++
 
-DBG    := -g
+DBG      := -g
 CXX_STD  := -std=c++17
 CXX_FLG  := --warn-unused-variable -unknown-pragmas -Wall -Werror
 CXX_THD  := -pthread
