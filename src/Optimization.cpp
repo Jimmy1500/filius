@@ -222,14 +222,11 @@ void Optimization::applyBoundaries(size_t * keys, double * values, size_t num_pa
             case G2::B:
             case G2::SIGMA_1:
             case G2::SIGMA_2:
-                values[i] = ( values[i] < 0.0 ? 0.0 : values[i] );
+                values[i] = ( values[i] > 0. ? values[i] : 0. );
                 break;
             case G2::RHO:
-                if ( values[i] > 1.0 ) {
-                    values[i] = 1.0;
-                }else if ( values[i] < 0.0 ) {
-                    values[i] = 0.0;
-                }
+                if      ( values[i] > 1.0 ) { values[i] = 1.0; }
+                else if ( values[i] < 0.0 ) { values[i] = 0.0; }
                 break;
         }
     }
