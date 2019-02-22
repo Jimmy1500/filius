@@ -112,7 +112,7 @@ class Swaption : public RateInstrument{
 
         //--------------------------------Utility-----------------------------------------------
         constexpr double max(double float_fix) const {
-            return ( float_fix ? float_fix : 0. );
+            return ( float_fix > 0. ? float_fix : 0. );
         }
 
         //-----------Procedural Step Components Recalculation Bitwise Marker/Verifier------------
