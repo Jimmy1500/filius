@@ -164,7 +164,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
 }
 
 void Optimization::getGradient (double * gradient, size_t * param_keys, size_t num_params, RateModel * model, RateInstrument * instrs, double * weights, size_t num_instrs){
-    double delta = 1.e-9, f_left, f_right;
+    double delta = 1.e-12, f_left, f_right;
 
     size_t i;
     switch (model->getModelType()){
