@@ -14,19 +14,19 @@ BIN=${EXPORT}/bin/
 C        := gcc
 CXX      := g++
 
-DEBUG    := -g
+DBG    := -g
 CXX_STD  := -std=c++17
 CXX_FLG  := --warn-unused-variable -unknown-pragmas -Wall -Werror
-CXX_THR  := -pthread
+CXX_THD  := -pthread
 CXX_OPT  := -Ofast
 CXX_INC  := -I$(INC)
-CXX_MAC  := -D__DEBUG__ -D__REGEN__
+CXX_MCR  := -D__DEBUG__ -D__REGEN__
 
-CFLAGS   := $(DEBUG) -gnu99 -Wall -Werror -pthread I$(INC)
-CXXFLAGS += $(DEBUG)
+CFLAGS   := $(DBG) -gnu99 -Wall -Werror -pthread I$(INC)
+CXXFLAGS += $(DBG)
 CXXFLAGS += $(CXX_STD)
 CXXFLAGS += $(CXX_FLG)
-CXXFLAGS += $(CXX_THR)
+CXXFLAGS += $(CXX_THD)
 CXXFLAGS += $(CXX_OPT)
 CXXFLAGS += $(CXX_INC)
-CXXFLAGS += $(CXX_MAC)
+CXXFLAGS += $(CXX_MCR)

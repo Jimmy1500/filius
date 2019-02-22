@@ -1,5 +1,5 @@
 OBJECTS=$(shell cd src && ls *.cpp | sed -e 's/cpp/o/g')
-LIBS=G2PP.so \
+LIBS=G2PP.so 			\
 	 Optimization.so
 EXECUTABLES=TestSimulation
 COMPILER=compiler.mk
