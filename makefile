@@ -11,16 +11,16 @@ all: ${OBJS} ${LIBS} ${EXECUTABLES}
 
 # build rules | $@: left(%), $<: right(first), $^: right(all)
 %.o: $(SRC)%.cpp
-	${CXX} ${CXXFLAGS} -fPIC -c $< -o ${OBJ}$@
+	${CXX} ${CXXFLAGS} -fPIC -o ${OBJ}$@ -c $<
 
 G2PP.so: ${OBJ}G2PP.o ${OBJ}Simulation.o ${OBJ}Curve.o
-	${CXX} ${CXXFLAGS} -shared $^ -o ${LIB}$@
+	${CXX} ${CXXFLAGS} -o ${LIB}$@ -shared $^
 
-Optimization.so: ${OBJ}Optimization.o ${LIB}G2PP.so ${OBJ}Swaption.o
-	${CXX} ${CXXFLAGS} -shared $^ -o ${LIB}$@
+Optimization.so: ${OBJ}Optimization.o ${OBJ}Swaption.o ${LIB}G2PP.so
+	${CXX} ${CXXFLAGS} -o ${LIB}$@ -shared $^
 
 TestSimulation: ${OBJ}TestSimulation.o ${OBJ}Swaption.o ${LIB}G2PP.so ${LIB}Optimization.so
-	${CXX} ${CXXFLAGS} $^ -o ${BIN}$@
+	${CXX} ${CXXFLAGS} -o ${BIN}$@ $^
 
 .PHONY: clean build run
 clean:
