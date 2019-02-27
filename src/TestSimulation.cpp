@@ -7,7 +7,7 @@
 
 using namespace std;
 
-int main(){
+int main(int argc, char *argv[]) {
     RateModel * model = new G2PP();
     cout<<model->getModelDescription()<<endl;
     G2PP * g2pp = static_cast<G2PP*>(model);
