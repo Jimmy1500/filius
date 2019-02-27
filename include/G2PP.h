@@ -132,8 +132,40 @@ class G2PP : public RateModel{
                                                                                 // [      ...             ...       ]
                                                                                 // [ X(t)(npaths-1), Y(t)(npaths-1) ]
 
-        constexpr double M(double, double, double) const;
-        constexpr double V(double) const;
+        constexpr double M(double X, double Y, double T_t) const {
+            double a = Coefs[G2::A];
+            double b = Coefs[G2::B];
+
+            return (
+                        X*(a?(1.-exp(-a*T_t))/a:T_t)
+                                      +
+                        Y*(b?(1.-exp(-b*T_t))/b:T_t)
+                   );
+        }
+        constexpr double V(double T_t) const {
+            double a = Coefs[G2::A];
+            double b = Coefs[G2::B];
+            double vol1 = Coefs[G2::SIGMA_1];
+            double vol2 = Coefs[G2::SIGMA_2];
+            double rho = Coefs[G2::RHO];
+
+            return (
+                        vol1*vol1*(a ? (T_t+2./a*exp(-a*T_t)-.5/a*exp(-2.*a*T_t)-1.5/a)/a/a : T_t)
+                                                            +
+                        vol2*vol2*(b ? (T_t+2./a*exp(-b*T_t)-.5/b*exp(-2.*b*T_t)-1.5/b)/b/b : T_t)
+                                                            +
+                        2.*rho*vol1*vol2*
+                        (
+                            a && b ? (T_t+(exp(-a*T_t)-1.)/a+(exp(-b*T_t)-1.)/b - (exp(-(a+b)*T_t)-1.)/(a+b))/a/b :
+                            (
+                                !a && !b ? T_t :
+                                (
+                                    a && !b ? (T_t+(exp(-a*T_t)-1.)/a)/a : (T_t+(exp(-b*T_t)-1.)/b)/b
+                                )
+                            )
+                        )
+                   );
+        }
 
         //----Getters & Setters-----
         inline void setParameter(size_t key, double value){
