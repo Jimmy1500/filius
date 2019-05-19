@@ -134,9 +134,10 @@ int main(int argc, char *argv[]) {
 
         //g2pp->setPeriphery(G2::PERI::NTHREADS, 1);
         Time = 0.0; AVG = 0.0;
+        double swaption_model_value = 0;
         for (i = 0; i < nterms; i++){
             auto start = chrono::high_resolution_clock::now();
-            double swaption_model_value = swaption->getModelValue();
+            swaption_model_value = swaption->getModelValue();
             cout<<"Swaption(NTL:"<<notional<<",STK:"<<strike<<",STL:"<<t<<",MAT:"<<terms[NN-1]<<",FRQ:"<<terms[1]-terms[0]<<",NTERMS:"<<NN<<"): "<<swaption_model_value<<endl;
             auto stop = chrono::high_resolution_clock::now();
             chrono::duration<double, milli> elapsed = stop-start;
@@ -156,9 +157,12 @@ int main(int argc, char *argv[]) {
             swpts[i].setMarketValue(7.81 + .01*(double)i);
         }
         Optimization * opt = new Optimization();
+
         opt->calibrate(g2pp, swpts, weights, num_instrs, max_iter);
         delete opt;
 
+        cout<<"### Original instrument model value: "<<endl;
+        cout<<"### Swaption(NTL:"<<notional<<",STK:"<<strike<<",STL:"<<t<<",MAT:"<<terms[NN-1]<<",FRQ:"<<terms[1]-terms[0]<<",NTERMS:"<<NN<<"): "<<swaption_model_value<<endl;
         cout<<"### Target instrument model value: "<<endl;
         cout<<"### Swaption(NTL:"<<notional<<",STK:"<<strike<<",STL:"<<t<<",MAT:"<<terms[NN-1]<<",FRQ:"<<terms[1]-terms[0]<<",NTERMS:"<<NN<<"): "<<swpts[0].getMarketValue()<<endl;
         cout<<"### Accepted instrument model value: "<<endl;

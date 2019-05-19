@@ -133,7 +133,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
 #ifdef __DEBUG__
                 DEBUG("### Accepted state ###");
                 DEBUG("### Accepted temperature: "<<best_temp)
-                DEBUG("### Accepted configuration: ")
+                cout<<"### Accepted configuration: ";
                 for ( i = 0; i < num_params-1; ++i ){
                     cout<<best_guess[i]<<",";
                 }
@@ -148,7 +148,7 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
     }
 }
 
-void Optimization::getGradient (double * gradient, size_t * param_keys, size_t num_params, RateModel * model, RateInstrument * instrs, double * weights, size_t num_instrs){
+void Optimization::getGradient (double * gradient, size_t * param_keys, size_t num_params, RateModel * model, RateInstrument * instrs, double * weights, size_t num_instrs) const {
     double delta = 1.e-12, f_left, f_right;
 
     size_t i;
@@ -176,7 +176,7 @@ void Optimization::getGradient (double * gradient, size_t * param_keys, size_t n
     }
 }
 
-double Optimization::loss_function (RateInstrument * instrs, double * weights, size_t num_instrs, size_t order){
+double Optimization::loss_function (RateInstrument * instrs, double * weights, size_t num_instrs, size_t order) const {
     double loss = 0;
     size_t i;
     for ( i = 0; i < num_instrs; ++i ){
@@ -185,7 +185,7 @@ double Optimization::loss_function (RateInstrument * instrs, double * weights, s
     return loss;
 }
 
-double Optimization::avg_loss (RateModel * model, RateInstrument * instrs, double * weights, size_t num_instrs, size_t num_trials, size_t order){
+double Optimization::avg_loss (RateModel * model, RateInstrument * instrs, double * weights, size_t num_instrs, size_t num_trials, size_t order) const {
 #ifdef __REGEN__
     size_t i;
     double avg = 0.;
@@ -199,7 +199,7 @@ double Optimization::avg_loss (RateModel * model, RateInstrument * instrs, doubl
 #endif
 }
 
-void Optimization::applyBoundaries(size_t * keys, double * values, size_t num_params){
+void Optimization::applyBoundaries(size_t * keys, double * values, size_t num_params) const {
     size_t i;
     for ( i = 0; i < num_params; ++i) {
         switch (keys[i]){
@@ -217,7 +217,7 @@ void Optimization::applyBoundaries(size_t * keys, double * values, size_t num_pa
     }
 }
 
-bool Optimization::isZero(double * gradient, size_t num_params, double precision){
+bool Optimization::isZero(double * gradient, size_t num_params, double precision) const {
     if (precision < 0.0) { precision = 0.0; }
 
     size_t i;
