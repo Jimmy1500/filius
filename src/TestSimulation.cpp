@@ -158,7 +158,7 @@ int main(int argc, char *argv[]) {
         }
         Optimization * opt = new Optimization();
 
-        opt->calibrate(g2pp, swpts, weights, num_instrs, max_iter);
+        opt->Calibrate(g2pp, swpts, weights, num_instrs, max_iter);
         delete opt;
 
         cout<<"### Original instrument model value: "<<endl;
