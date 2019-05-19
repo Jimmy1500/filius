@@ -8,7 +8,7 @@ Optimization::~Optimization(){
     }
 }
 
-void Optimization::Calibrate (RateModel* model, RateInstrument* instrs, double* weights, size_t num_instrs, size_t max_iter, double threshold, double k, double alpha, size_t num_trials) {
+void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* weights, size_t num_instrs, size_t max_iter, double threshold, double k, double alpha, size_t num_trials) {
     if ( threshold <= 0.0 ) {
         threshold = 1.e-12;
 #ifdef __DEBUG__
@@ -39,7 +39,7 @@ void Optimization::Calibrate (RateModel* model, RateInstrument* instrs, double* 
                 double best_guess[num_params] = {0., 0., 0., 0., 0.};
                 double gradient  [num_params] = {0., 0., 0., 0., 0.};
 
-                double potential = GetAvgLoss(g2pp, instrs, weights, num_instrs, num_trials);
+                double potential = getAvgLoss(g2pp, instrs, weights, num_instrs, num_trials);
                 double curr_temp = potential, next_temp = potential, sec_best_temp = potential, best_temp = potential, prob = 0.;
 
                 g2pp->getParameters(keys, curr_guess, num_params);
@@ -49,14 +49,14 @@ void Optimization::Calibrate (RateModel* model, RateInstrument* instrs, double* 
                 do{
                     if ( curr_temp <= threshold ) { break; }
 
-                    GetGradient(gradient, keys, num_params, model, instrs, weights, num_instrs);
+                    getGradient(gradient, keys, num_params, model, instrs, weights, num_instrs);
                     for (i = 0; i < num_params; ++i){
                         // stochastic descent (simulated annealing w. local optimizer)
                         next_guess[i] = curr_guess[i] - alpha * gradient[i] + Generator->nrand(0, i);
                     }
-                    ApplyBoundaries(keys, next_guess, num_params);
+                    applyBoundaries(keys, next_guess, num_params);
                     g2pp->setParameters(keys, next_guess, num_params);
-                    next_temp = GetAvgLoss(g2pp, instrs, weights, num_instrs, num_trials);
+                    next_temp = getAvgLoss(g2pp, instrs, weights, num_instrs, num_trials);
 #ifdef __DEBUG__
                     cout<<"### Iteration "<<(iter+1)<<" ###"<<endl;
                     DEBUG("### improvement potential: "<<potential)
@@ -148,7 +148,7 @@ void Optimization::Calibrate (RateModel* model, RateInstrument* instrs, double* 
     }
 }
 
-void Optimization::GetGradient (double * gradient, size_t * param_keys, size_t num_params, RateModel * model, RateInstrument * instrs, double * weights, size_t num_instrs) const {
+void Optimization::getGradient (double * gradient, size_t * param_keys, size_t num_params, RateModel * model, RateInstrument * instrs, double * weights, size_t num_instrs) const {
     double delta = 1.e-12, f_left, f_right;
 
     size_t i;
@@ -159,10 +159,10 @@ void Optimization::GetGradient (double * gradient, size_t * param_keys, size_t n
                 for ( i = 0; i < num_params; ++i){
                     param = g2pp->getParameter(param_keys[i]);
                     g2pp->setParameter(param_keys[i], (param-delta));
-                    f_left = GetLoss(instrs, weights, num_instrs);
+                    f_left = getLoss(instrs, weights, num_instrs);
 
                     g2pp->setParameter(param_keys[i], (param+delta));
-                    f_right = GetLoss(instrs, weights, num_instrs);
+                    f_right = getLoss(instrs, weights, num_instrs);
 
                     gradient[i] = (f_right - f_left) / delta*0.5;
                     g2pp->setParameter(param_keys[i], param);
@@ -176,7 +176,7 @@ void Optimization::GetGradient (double * gradient, size_t * param_keys, size_t n
     }
 }
 
-double Optimization::GetLoss (RateInstrument * instrs, double * weights, size_t num_instrs, size_t order) const {
+double Optimization::getLoss (RateInstrument * instrs, double * weights, size_t num_instrs, size_t order) const {
     double loss = 0;
     size_t i;
     for ( i = 0; i < num_instrs; ++i ){
@@ -185,21 +185,21 @@ double Optimization::GetLoss (RateInstrument * instrs, double * weights, size_t 
     return loss;
 }
 
-double Optimization::GetAvgLoss (RateModel * model, RateInstrument * instrs, double * weights, size_t num_instrs, size_t num_trials, size_t order) const {
+double Optimization::getAvgLoss (RateModel * model, RateInstrument * instrs, double * weights, size_t num_instrs, size_t num_trials, size_t order) const {
 #ifdef __REGEN__
     size_t i;
     double avg = 0.;
     for ( i = 0; i < num_trials; ++i ){
         model->markDirtyAll(); 
-        avg += fabs(GetLoss(instrs, weights, num_instrs, order));
+        avg += fabs(getLoss(instrs, weights, num_instrs, order));
     }
     return (avg/(double)num_trials);
 #else
-    return fabs(GetLoss(instrs, weights, num_instrs, order));
+    return fabs(getLoss(instrs, weights, num_instrs, order));
 #endif
 }
 
-void Optimization::ApplyBoundaries(size_t * keys, double * values, size_t num_params) const {
+void Optimization::applyBoundaries(size_t * keys, double * values, size_t num_params) const {
     size_t i;
     for ( i = 0; i < num_params; ++i) {
         switch (keys[i]){
@@ -217,7 +217,7 @@ void Optimization::ApplyBoundaries(size_t * keys, double * values, size_t num_pa
     }
 }
 
-bool Optimization::IsZero(double * gradient, size_t num_params, double precision) const {
+bool Optimization::isZero(double * gradient, size_t num_params, double precision) const {
     if (precision < 0.0) { precision = 0.0; }
 
     size_t i;
