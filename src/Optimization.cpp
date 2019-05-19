@@ -8,11 +8,11 @@ Optimization::~Optimization(){
     }
 }
 
-void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* weights, size_t num_instrs, size_t max_iter, double precision, double k, double alpha, size_t num_trials){
-    if ( precision <= 0.0 ) {
-        precision = 1.e-12;
+void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* weights, size_t num_instrs, size_t max_iter, double threshold, double k, double alpha, size_t num_trials){
+    if ( threshold <= 0.0 ) {
+        threshold = 1.e-12;
 #ifdef __DEBUG__
-        WARN("precision must be greater than 0")
+        WARN("threshold must be greater than 0")
 #endif
     }
     if ( k <= 0.0 ) {
@@ -37,18 +37,17 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                 double curr_guess[num_params] = {0., 0., 0., 0., 0.};
                 double next_guess[num_params] = {0., 0., 0., 0., 0.};
                 double best_guess[num_params] = {0., 0., 0., 0., 0.};
-                double gradient[num_params]   = {0., 0., 0., 0., 0.};
+                double gradient  [num_params] = {0., 0., 0., 0., 0.};
 
-                double factor = precision+0.1;
-                double curr_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
-                double next_temp = curr_temp, best_temp = curr_temp, prob = 0.;
+                double potential = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
+                double curr_temp = potential, next_temp = potential, sec_best_temp = potential, best_temp = potential, prob = 0.;
 
                 g2pp->getParameters(keys, curr_guess, num_params);
                 Generator = new Rand<double>((num_params+1),1,0,1);
 
-                size_t i, iter = 0, optimum_reached = 0, tiny_improvement = 0;
+                size_t i, iter = 0;
                 do{
-                    if ( curr_temp <= precision ) { break; }
+                    if ( curr_temp <= threshold ) { break; }
 
                     getGradient(gradient, keys, num_params, model, instrs, weights, num_instrs);
                     for (i = 0; i < num_params; ++i){
@@ -60,91 +59,77 @@ void Optimization::calibrate (RateModel* model, RateInstrument* instrs, double* 
                     next_temp = avg_loss(g2pp, instrs, weights, num_instrs, num_trials);
 #ifdef __DEBUG__
                     cout<<"### Iteration "<<(iter+1)<<" ###"<<endl;
+                    DEBUG("### improvement potential: "<<potential)
+
                     cout<<"### Current gradient: ";
                     for (i = 0; i < num_params; ++i){
                         cout<<gradient[i]<<"; ";
                     }
                     cout<<endl;
-
                     cout<<"### Current configuration: ";
                     for ( i = 0; i < num_params; ++i ){
                         cout<<curr_guess[i]<<"; ";
                     }
                     cout<<endl;
-                    cout<<"### Current temperature: "<<curr_temp<<endl;
-
                     cout<<"### Next configuration: ";
                     for ( i = 0; i < num_params; ++i ){
                         cout<<next_guess[i]<<"; ";
                     }
                     cout<<endl;
+
+                    cout<<"### Current temperature: "<<curr_temp<<endl;
                     cout<<"### Next temperature: "<<next_temp<<endl;
+                    cout<<"### Best temperature: "<<best_temp<<endl;
+                    cout<<"### Second best temperature: "<<sec_best_temp<<endl;
 #endif
                     if ( isnan(next_temp) ){
 #ifdef __DEBUG__
                         DEBUG("### Adjacent temperature not measurable, trying again...")
 #endif
                         continue;
-                    } else if ( next_temp <= precision ) {
+                    } else if ( next_temp <= threshold ) { //accept current state
 #ifdef __DEBUG__
                         DEBUG("### Adjacent temperature low enough, configuration is accepted as optimal solution!")
 #endif
                         g2pp->getParameters(keys, best_guess, num_params);
                         curr_temp = next_temp; best_temp = next_temp;
-                        break; //accept current state
+                        break;
+
                     } else if ( next_temp < curr_temp ){
+#ifdef __DEBUG__
+                        double ratio = (1.0 - next_temp/curr_temp) * 100.0; //temperature improvement measure (current -> next)
+                        DEBUG("### Adjacent temperature is cooler (better), accepted with improvment: "<<ratio<<"%")
+#endif
                         g2pp->getParameters(keys, curr_guess, num_params);
                         curr_temp = next_temp;
-
                         if ( next_temp < best_temp ){
-                            factor = 1 - next_temp/best_temp; //temperature improvement measure
                             g2pp->getParameters(keys, best_guess, num_params);
-                            best_temp = next_temp;
-
-                            if ( factor < precision ) {
-                                ++tiny_improvement;
-                            }
+                            sec_best_temp = best_temp; best_temp = next_temp;
+                            potential = 1.0 - best_temp/sec_best_temp;
                         }
-#ifdef __DEBUG__
-                        DEBUG("### Adjacent temperature is cooler (better), configuration accepted with improvment factor: "<<factor)
-#endif
+
                     } else {
-#ifdef __DEBUG__
-                        DEBUG("### Adjacent temperature is hotter (worse), determining transition probability...")
-#endif
-                        prob = exp( (curr_temp - next_temp) / (k * curr_temp) );
-#ifdef __DEBUG__
-                        DEBUG("transition probability:  "<<prob)
-#endif
+                        potential *= 0.9; // if no improvement observed: discount improvement potential & push towards Kuhn-Tucker condition
+                        prob = exp( (curr_temp - next_temp) / (k * curr_temp) ); // adjacent state transition probability
                         if ( Generator->urand(0, num_params) <= prob ){
+#ifdef __DEBUG__
+                            DEBUG("### Adjacent temperature is hotter (worse), accepted with transition probability: "<<prob)
+#endif
                             g2pp->getParameters(keys, curr_guess, num_params);
                             curr_temp = next_temp;
-#ifdef __DEBUG__
-                            DEBUG("transition accepted...")
-#endif
                         } else{
+#ifdef __DEBUG__
+                            DEBUG("### Adjacent temperature is hotter (worse), rejected with transition probability: "<<prob)
+#endif
                             g2pp->setParameters(keys, curr_guess, num_params);
-#ifdef __DEBUG__
-                            DEBUG("transition rejected...")
-#endif
                         }
+
                     }
 
-                    if ( isZero(gradient, num_params, precision) ){
-                        ++optimum_reached;
-                    } else {
-                        optimum_reached = 0;
-                    }
-#ifdef __DEBUG__
-                    DEBUG("local optimum reached: "<<optimum_reached)
-                    cout<<endl;
-#endif
                     ++iter;
-                } while ( optimum_reached < 49 && tiny_improvement < 7 && iter < max_iter );
+                } while ( potential > threshold || iter < max_iter);
 
-                if ( best_temp < curr_temp ){
-                    g2pp->setParameters(keys, best_guess, num_params);
-                }
+                if ( best_temp < curr_temp ){ g2pp->setParameters(keys, best_guess, num_params); }
 #ifdef __DEBUG__
                 DEBUG("### Accepted state ###");
                 DEBUG("### Accepted temperature: "<<best_temp)
@@ -233,11 +218,11 @@ void Optimization::applyBoundaries(size_t * keys, double * values, size_t num_pa
 }
 
 bool Optimization::isZero(double * gradient, size_t num_params, double precision){
+    if (precision < 0.0) { precision = 0.0; }
+
     size_t i;
     for ( i = 0; i < num_params; ++i ){
-        if ( fabs(gradient[i]) > precision ){
-            return false;
-        }
+        if ( fabs(gradient[i]) > precision ){ return false; }
     }
     return true;
 }

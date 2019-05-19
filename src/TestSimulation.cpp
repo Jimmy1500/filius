@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
         cout<<"Average Cost: "<<Time/(double)i<<" milliseconds"<<endl;
         cout<<"Average Price: "<<AVG/(double)i<<endl<<endl;;
 
-        const size_t num_instrs = 1, max_iter = 177;
+        const size_t num_instrs = 1, max_iter = 212;
         Swaption swpts[num_instrs] = {*swaption};
         double weights[num_instrs] = {1.0};
 
@@ -163,10 +163,9 @@ int main(int argc, char *argv[]) {
         cout<<"### Swaption(NTL:"<<notional<<",STK:"<<strike<<",STL:"<<t<<",MAT:"<<terms[NN-1]<<",FRQ:"<<terms[1]-terms[0]<<",NTERMS:"<<NN<<"): "<<swpts[0].getMarketValue()<<endl;
         cout<<"### Accepted instrument model value: "<<endl;
         cout<<"### Swaption(NTL:"<<notional<<",STK:"<<strike<<",STL:"<<t<<",MAT:"<<terms[NN-1]<<",FRQ:"<<terms[1]-terms[0]<<",NTERMS:"<<NN<<"): "<<swpts[0].getModelValue()<<endl;
+
     }catch(int code){
-        cout<<
-        model->ModelError.Message<<"@"<<model->ModelError.Function<<":"<<model->ModelError.File<<":"<<model->ModelError.Line
-        <<endl;
+        cout<< model->ModelError.Message<<"@"<<model->ModelError.Function<<":"<<model->ModelError.File<<":"<<model->ModelError.Line <<endl;
     }
 
     thread garbage = thread([instr, model]()->void{ delete instr; delete model; });
