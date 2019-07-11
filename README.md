@@ -48,7 +48,7 @@
     make clean (clean obj and lib directories for clean build)
 
     * OPTION 2:  
-    mkdir -p build && cmake -H. -Bbuild
+    mkdir -p build && cmake -H. -Bbuild  
     ( cd build && make )
 
 * How to run tests  
