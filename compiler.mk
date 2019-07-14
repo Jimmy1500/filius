@@ -16,7 +16,7 @@ CXX      := g++
 
 DBG      := -g
 CXX_STD  := -std=c++17
-CXX_FLG  := --warn-unused-variable -unknown-pragmas -Wall -Werror
+CXX_FLG  := --warn-unused-variable -Wunknown-pragmas -Wall -Werror
 CXX_THD  := -pthread
 CXX_OPT  := -Ofast
 CXX_INC  := -I$(INC)
