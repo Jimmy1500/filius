@@ -29,11 +29,20 @@ struct mat3d{
     size_t ndims;
     double *** value;
 
-    mat3d(mat3d & mtrx){
-        nterms = mtrx.nterms;
-        npaths = mtrx.npaths;
-        ndims  = mtrx.ndims;
-        value  = mtrx.value;
+    mat3d(mat3d & mtrx) :
+        nterms(move(mtrx.npaths)),
+        npaths(move(mtrx.npaths)),
+        ndims(move(mtrx.ndims)),
+        value(move(mtrx.value))
+    {
+    }
+
+    mat3d(mat3d && mtrx) :
+        nterms(move(mtrx.npaths)),
+        npaths(move(mtrx.npaths)),
+        ndims(move(mtrx.ndims)),
+        value(move(mtrx.value))
+    {
     }
 
     //allocate and zero memory dynamically
@@ -65,6 +74,14 @@ struct mat3d{
     }
     
     //operator overload
+    void operator=(mat3d && mtrx)
+    {
+        nterms = move(mtrx.npaths);
+        npaths = move(mtrx.npaths);
+        ndims = move(mtrx.ndims);
+        value = move(mtrx.value);
+    }
+
     double ** operator[](size_t dim){
         return value[dim];
     }
