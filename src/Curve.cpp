@@ -1,19 +1,50 @@
 #include "Curve.h"
 
-Curve::Curve(Curve * curve){ //Shallow
-    *this = &(*curve);
+Curve::Curve(Curve & curve) : // Copy constructor
+    Terms(std::move(curve.Terms)),
+    Values(std::move(curve.Values)),
+    Length(std::move(curve.Length))
+{
 }
 
-Curve::Curve(double * terms, double * prices, size_t len) //Deep
-    : Terms(new double[len]),
+Curve::Curve(Curve * curve) :
+    Terms(std::move(curve->Terms)),
+    Values(std::move(curve->Values)),
+    Length(std::move(curve->Length))
+{
+}
+
+Curve::Curve(Curve && curve) : // Move constructor
+    Terms(new double[curve.Length]),
+    Values(new double[curve.Length]),
+    Length(curve.Length)    
+{
+    DeepCopy_YC(curve.Terms, curve.Values) // Deep Copy
+}
+
+Curve::Curve(double * terms, double * prices, size_t len) :
+    Terms(new double[len]),
     Values(new double[len]),
-    Length(len){
-    DeepCopy_YC(terms, prices)
+    Length(len)
+{
+    DeepCopy_YC(terms, prices) // Deep Copy
 }
 
 Curve::~Curve(){
     delete [] Terms;
     delete [] Values;
+}
+
+void Curve::operator=(Curve & curve) {
+    Terms = std::move(curve.Terms);
+    Values = std::move(curve.Values);
+    Length = std::move(curve.Length);
+}
+
+void Curve::operator=(Curve && curve) {
+    Terms = std::move(curve.Terms);
+    Values = std::move(curve.Values);
+    Length = std::move(curve.Length);
 }
 
 void Curve::interpolateTerms(double t, size_t& index, int& direction){

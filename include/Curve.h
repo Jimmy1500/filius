@@ -40,10 +40,14 @@ class Curve{
         double *Values;    //Prices w.r.t settlement(Time), i.e. { P(Time, Terms[i]) }
         size_t  Length;    //Length of the yield curve
     public:
+        Curve(Curve &);
         Curve(Curve *);
+
+        Curve(Curve &&);
         Curve(double*, double*, size_t);
-        Curve(double, double*, double*, size_t);
         ~Curve();
+        void operator=(Curve &);
+        void operator=(Curve &&);
 
         //Utilities:
         //ORDED BY Terms from least to most
