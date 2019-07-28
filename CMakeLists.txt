@@ -17,11 +17,12 @@ set(OPTM_SRC "${SRC_DIR}/Optimization.cpp")
 include_directories(include)
 file(GLOB SOURCES "src/*.cpp")
 
-add_library(G2++ SHARED ${G2PP_SRC})
-add_library(OPT SHARED ${OPTM_SRC})
-
 add_executable(TestSimulation ${SOURCES})
 
-link_directories(${CMAKE_BINARY_DIR})
-set (PROJECT_LINK_LIBS ${PROJECT_BINARY_DIR}/libOPT.so)
-target_link_libraries(TestSimulation ${PROJECT_LINK_LIBS})
+# PHONY TARGETS
+add_custom_target(run "./TestSimulation")
+add_custom_target(build make -j)
+add_custom_target(memcheck memcheck "./TestSimulation")
+
+add_library(G2++ SHARED ${G2PP_SRC})
+add_library(OPTM SHARED ${OPTM_SRC})
