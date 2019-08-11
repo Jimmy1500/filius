@@ -35,7 +35,8 @@ int main(int argc, char *argv[]) {
         g2pp->setPeripheries(peris_keys, peris, G2::PERI::NUM_PERIS);
         g2pp->setParameters(coefs_keys, coefs, G2::PARAM::NUM_PARAMS);
         
-        size_t i,j,nterms = 7;
+        size_t i,j;
+        const size_t nterms = 7;
         double Time, AVG;
         double PVs[nterms], Stls[nterms], Mats[nterms];
         cout.precision(10);
