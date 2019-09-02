@@ -60,7 +60,7 @@ class Swaption : public RateInstrument{
         double* Terms;
         size_t  NumTerms;
 
-        size_t *Params;       //Parameters: NTL, STK, STL
+        double *Params;       //Parameters: NTL, STK, STL
         size_t *Flags;        //Dirty marker for Params
         volatile size_t Dirty;
 

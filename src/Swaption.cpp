@@ -3,7 +3,7 @@
 Swaption::Swaption()
     : RateInstrument(RateInstrumentType::RIT_SWAPTION, "Swaption with "),
     Model(nullptr),
-    Params(new size_t[SWPT::NUM_PARAMS]()),
+    Params(new double[SWPT::NUM_PARAMS]()),
     Flags (new size_t[SWPT::NUM_PARAMS]),
     Dirty(0),
     Prices(nullptr),
@@ -17,7 +17,7 @@ Swaption::Swaption()
 Swaption::Swaption(RateModel* model)
     : RateInstrument(RateInstrumentType::RIT_SWAPTION, "Swaption with "),
     Model(model),
-    Params(new size_t[SWPT::NUM_PARAMS]()),
+    Params(new double[SWPT::NUM_PARAMS]()),
     Flags (new size_t[SWPT::NUM_PARAMS]),
     Dirty(0),
     Prices(nullptr),
@@ -32,7 +32,7 @@ Swaption::Swaption(RateModel* model)
 Swaption::Swaption(Swaption & swaption)
     : RateInstrument(RateInstrumentType::RIT_SWAPTION, "Swaption with "),
     Model(swaption.getModel()),
-    Params(new size_t[SWPT::NUM_PARAMS]()),
+    Params(new double[SWPT::NUM_PARAMS]()),
     Flags (new size_t[SWPT::NUM_PARAMS]),
     Dirty(0),
     Prices(nullptr),

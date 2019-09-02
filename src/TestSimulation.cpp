@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
 
         const size_t NN = 12, num_params = 3;
         double terms[NN] = {t+3./12, t+6./12, t+9./12, t+12./12, t+15./12., t+18./12, t+21./12, t+24./12, t+27./12, t+30./12, t+33./12, t+36./12};
-        double notional = 100., strike = .02;
+        double notional = 100., strike = .01522;
         size_t swpt_keys  [num_params] = {SWPT::NTL, SWPT::STK, SWPT::STL};
         double swpt_values[num_params] = { notional,    strike,       t  };
 
@@ -140,6 +140,7 @@ int main(int argc, char *argv[]) {
             auto start = chrono::high_resolution_clock::now();
             swaption_model_value = swaption->getModelValue();
             cout<<"Swaption(NTL:"<<notional<<",STK:"<<strike<<",STL:"<<t<<",MAT:"<<terms[NN-1]<<",FRQ:"<<terms[1]-terms[0]<<",NTERMS:"<<NN<<"): "<<swaption_model_value<<endl;
+            swaption->markDirtyAll();
             auto stop = chrono::high_resolution_clock::now();
             chrono::duration<double, milli> elapsed = stop-start;
             Time += elapsed.count(); AVG += swaption_model_value;
@@ -155,7 +156,7 @@ int main(int argc, char *argv[]) {
             cout<<"Setting swaption with allocated weight: "<<weights[i]<<endl;
             swpts[i].setParameters(swpt_keys, swpt_values, num_params);
             swpts[i].setTerms(terms, NN);
-            swpts[i].setMarketValue(7.81 + .01*(double)i);
+            swpts[i].setMarketValue(0.016 + .001*(double)i);
         }
         Optimization * opt = new Optimization();
 

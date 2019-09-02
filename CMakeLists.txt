@@ -27,5 +27,5 @@ ADD_CUSTOM_TARGET(rn TestSimulation)
 ADD_CUSTOM_TARGET(mc memcheck "./TestSimulation")
 
 SET(SRC_DIR "${CMAKE_SOURCE_DIR}/src")
-ADD_LIBRARY(G2++ SHARED ${SRC_DIR}/G2PP.cpp)
-ADD_LIBRARY(OPTM SHARED ${SRC_DIR}/Optimization.cpp)
+# ADD_LIBRARY(G2++ SHARED ${SRC_DIR}/G2PP.cpp)
+# ADD_LIBRARY(OPTM SHARED ${SRC_DIR}/Optimization.cpp)
