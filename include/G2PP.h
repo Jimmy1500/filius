@@ -152,7 +152,7 @@ class G2PP : public RateModel{
             return (
                         vol1*vol1*(a ? (T_t+2./a*exp(-a*T_t)-.5/a*exp(-2.*a*T_t)-1.5/a)/a/a : T_t)
                                                             +
-                        vol2*vol2*(b ? (T_t+2./a*exp(-b*T_t)-.5/b*exp(-2.*b*T_t)-1.5/b)/b/b : T_t)
+                        vol2*vol2*(b ? (T_t+2./b*exp(-b*T_t)-.5/b*exp(-2.*b*T_t)-1.5/b)/b/b : T_t)
                                                             +
                         2.*rho*vol1*vol2*
                         (
