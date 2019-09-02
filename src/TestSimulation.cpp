@@ -13,13 +13,13 @@ int main(int argc, char *argv[]) {
     G2PP * g2pp = static_cast<G2PP*>(model);
 
     double t = 2; double T = 30;
-    const int N = 11;
-    double stl[N]={1./12., 0.25, .5, 1., 2., 3., 5., 7., 10., 20., 30.};
+    const int N = 12;
+    double stl[N]={1./12., 1./6., 0.25, .5, 1., 2., 3., 5., 7., 10., 20., 30.};
     double price [N]={
-        exp(-.0193*stl[0]), exp(-.0203*stl[1]), exp(-.0222*stl[2]), 
-        exp(-.0245*stl[3]), exp(-.0267*stl[4]), exp(-.0278*stl[5]), 
-        exp(-.0287*stl[6]), exp(-.0296*stl[7]), exp(-.0300*stl[8]),
-        exp(-.0307*stl[9]), exp(-.0313*stl[10])
+        exp(-.0211*stl[0]), exp(-.0214*stl[1]), exp(-.0207*stl[2]),
+        exp(-.0204*stl[3]), exp(-.0188*stl[4]), exp(-.0173*stl[5]),
+        exp(-.0167*stl[6]), exp(-.0168*stl[7]), exp(-.0177*stl[8]),
+        exp(-.0190*stl[9]), exp(-.0221*stl[10]), exp(-.0244*stl[11])
     };
     Curve YieldCurve = Curve(stl, price, N);
     RateInstrument * instr = new Swaption(model);
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
         size_t peris_keys[] = {G2::NTERMS, G2::NPATHS, G2::NDIMS, G2::NTHREADS};
         size_t peris[] = {1,777777,2,16};
         size_t coefs_keys[] = {G2::A, G2::B, G2::SIGMA_1, G2::SIGMA_2, G2::RHO, G2::PC_A, G2::PC_B};
-        double coefs[] = {0.10, 0.10, 0.042, 0.045, -0.89, 0.8, 0.5};
+        double coefs[] = {0.773511777, 0.082013014, 0.022284644, 0.010382461, -0.701985206, 0.8, 0.5};
         
         g2pp->setYieldCurve(&YieldCurve);
         g2pp->setPeripheries(peris_keys, peris, G2::PERI::NUM_PERIS);
