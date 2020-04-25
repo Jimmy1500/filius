@@ -226,9 +226,7 @@ class G2PP : public RateModel{
             }
         }
 
-        constexpr Simulation* getSimEngine() const {
-            return Sim;
-        }
+        constexpr Simulation* getSimEngine() const { return Sim; }
 
         //----Utility----
         inline void clearSimulation(){
@@ -242,38 +240,19 @@ class G2PP : public RateModel{
         inline void markDirtyFrom(size_t step){
             if (step){
                 size_t i;
-                for (i=step; i<G2::NUM_PROCS; i<<=1u){
-                    Dirty|=i;
-                }
+                for (i=step; i<G2::NUM_PROCS; i<<=1u){ Dirty|=i; }
             }
         }
 
-        inline void markDirty(size_t step){
-            Dirty|=step;
-        }
-
+        inline void markDirty(size_t step){ Dirty|=step; }
         inline void markDirtyAll(){
             size_t i;
-            for (i=G2::GENERATION; i<G2::NUM_PROCS; i<<=1u){
-                Dirty|=i;
-            }
+            for (i=G2::GENERATION; i<G2::NUM_PROCS; i<<=1u){ Dirty|=i; }
         }
-
-        inline void clearDirty(size_t step){
-            Dirty&=~step;
-        }
-
-        inline void clearDirtyAll(){
-            Dirty=0;
-        }
-
-        inline size_t isDirty(size_t step){
-            return Dirty & step;
-        }
-
-        inline size_t isDirty(){
-            return Dirty;
-        }
+        inline void clearDirty(size_t step){ Dirty&=~step; }
+        inline void clearDirtyAll(){ Dirty=0; }
+        inline size_t isDirty(size_t step){ return Dirty & step; }
+        inline size_t isDirty(){ return Dirty; }
 
 };
 
