@@ -1,25 +1,26 @@
 #include "Curve.h"
 
 Curve::Curve(Curve & curve) : // Copy constructor
+    Terms(new double[curve.Length]),
+    Values(new double[curve.Length]),
+    Length(curve.Length)
+{
+    DeepCopy_YC(curve.Terms, curve.Values) // Deep Copy
+}
+
+Curve::Curve(Curve * curve) :
+    Terms(new double[curve->Length]),
+    Values(new double[curve->Length]),
+    Length(curve->Length)
+{
+    DeepCopy_YC(curve->Terms, curve->Values) // Deep Copy
+}
+
+Curve::Curve(Curve && curve) : // Move constructor
     Terms(std::move(curve.Terms)),
     Values(std::move(curve.Values)),
     Length(std::move(curve.Length))
 {
-}
-
-Curve::Curve(Curve * curve) :
-    Terms(std::move(curve->Terms)),
-    Values(std::move(curve->Values)),
-    Length(std::move(curve->Length))
-{
-}
-
-Curve::Curve(Curve && curve) : // Move constructor
-    Terms(new double[curve.Length]),
-    Values(new double[curve.Length]),
-    Length(curve.Length)    
-{
-    DeepCopy_YC(curve.Terms, curve.Values) // Deep Copy
 }
 
 Curve::Curve(double * terms, double * prices, size_t len) :
@@ -79,21 +80,9 @@ double Curve::P(double tau){
 }
 
 double Curve::P(double t, double T){
-    if (t == T){
-        return 1.0;
-    }else{
-        return P(T)/P(t);
-    }
+    if (t == T){ return 1.0; }
+    else{ return P(T)/P(t); }
 }
-
-constexpr double * Curve::getTerms() const {
-    return Terms;
-}
-
-constexpr double * Curve::getValues() const {
-    return Values;
-}
-
-constexpr size_t Curve::getLength() const {
-    return Length;
-}
+constexpr double * Curve::getTerms() const { return Terms; }
+constexpr double * Curve::getValues() const { return Values; }
+constexpr size_t Curve::getLength() const { return Length; }
